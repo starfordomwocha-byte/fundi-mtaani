@@ -1,35 +1,16 @@
-/* House style — main #0F4C3A ground #FAF7F1 ink #1C1917 accent #D97706 headings: Georgia, 'Times New Roman', serif body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif */
-
-/* ==========================================================================
-   FUNDIMTAANI — STATIC SITE STYLESHEET (DBT 1305 · Week 7)
-   One stylesheet for the whole site. No inline styles, no <style> blocks.
-   Pure HTML + CSS — no backend, no JavaScript.
-   --------------------------------------------------------------------------
-   BLOCK 1 — Shared: house style, page grid, header, nav, footer,
-             buttons, cards, forms, tables ................ Member 1
-   BLOCK 2 — Home page (index.html) ...................... Member ___
-   BLOCK 3 — Directory + fundi profile ................... Member ___
-   BLOCK 4 — Join + Post-a-Job forms ..................... Member ___
-   BLOCK 5 — About + Contact + Coverage .................. Member ___
-   THE PHONE — single media query, LAST in this file .... Member 1
-   ========================================================================== */
-
-
-/* ==================== BLOCK 1 — SHARED (Member 1) ==================== */
-
-/* ---- House style tokens (the project's initial colour scheme) ---- */
+/* Shared styles */
 :root {
-  --main: #0F4C3A;          /* deep forest green — header, primary buttons, links */
-  --main-dark: #0A3327;     /* darker green — nav bar, hovers */
-  --main-soft: #EBF5F0;     /* pale green — tinted panels, table heads */
-  --ground: #FAF7F1;        /* warm paper — page background */
-  --ink: #1C1917;           /* warm charcoal — body text, headings */
-  --ink-soft: #57534E;      /* muted text */
-  --accent: #D97706;        /* ochre amber — calls to action, ratings, highlights */
-  --accent-dark: #B45309;   /* darker amber — hovers */
-  --accent-soft: #FEF3E2;   /* pale amber — tinted callouts */
-  --card: #FFFFFF;          /* card surfaces */
-  --line: #E5DDCF;          /* borders */
+  --main: #0F4C3A;
+  --main-dark: #0A3327;
+  --main-soft: #EBF5F0;
+  --ground: #FAF7F1;
+  --ink: #1C1917;
+  --ink-soft: #57534E;
+  --accent: #D97706;
+  --accent-dark: #B45309;
+  --accent-soft: #FEF3E2;
+  --card: #FFFFFF;
+  --line: #E5DDCF;
   --ok: #15803D;
   --ok-soft: #E9F6ED;
   --danger: #B91C1C;
@@ -39,7 +20,7 @@
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* ---- Base ---- */
+/* Base styles */
 *, *::before, *::after { box-sizing: border-box; }
 
 html { -webkit-text-size-adjust: 100%; }
@@ -51,7 +32,6 @@ body {
   background: var(--ground);
   line-height: 1.6;
   min-height: 100vh;
-  /* Lab 2 layout: page on a Grid with named areas */
   display: grid;
   grid-template-columns: minmax(0, 1fr) 18rem;
   grid-template-areas:
@@ -62,7 +42,7 @@ body {
   align-content: start;
 }
 
-/* Trap fix: no wide element may push the page sideways */
+/* Prevent horizontal overflow */
 img, input, select, textarea { max-width: 100%; }
 img { height: auto; }
 
@@ -85,14 +65,14 @@ a:hover { color: var(--main-dark); }
 .pre-line { white-space: pre-line; }
 .hidden { display: none; }
 
-/* ---- Named grid areas ---- */
+/* Page grid */
 .site-header { grid-area: header; }
 .site-nav    { grid-area: nav; }
 .site-main   { grid-area: main; min-width: 0; padding: 1.5rem clamp(1rem, 4vw, 2.5rem); }
 .site-aside  { grid-area: aside; min-width: 0; padding: 1.5rem 1.5rem 1.5rem 0; }
 .site-footer { grid-area: footer; }
 
-/* ---- Header (text brand only — no logo image) ---- */
+/* Header */
 .site-header {
   background: var(--main);
   color: #fff;
@@ -113,7 +93,7 @@ a:hover { color: var(--main-dark); }
 .brand:hover { color: #fff; }
 .brand-tagline { margin: 0; color: #D9EBE2; font-size: 0.95rem; }
 
-/* ---- Nav: one Flexbox row, no bullets ---- */
+/* Navigation */
 .site-nav { background: var(--main-dark); }
 .site-nav ul {
   list-style: none;
@@ -137,7 +117,7 @@ a:hover { color: var(--main-dark); }
 .site-nav .nav-cta { background: var(--accent); color: #fff; }
 .site-nav .nav-cta:hover { background: var(--accent-dark); color: #fff; }
 
-/* ---- Aside cards ---- */
+/* Sidebar cards */
 .site-aside .aside-card {
   background: var(--card);
   border: 1px solid var(--line);
@@ -149,7 +129,7 @@ a:hover { color: var(--main-dark); }
 .check-list { margin: 0; padding-left: 1.2rem; }
 .check-list li { margin-bottom: 0.4rem; }
 
-/* ---- Footer ---- */
+/* Footer */
 .site-footer {
   background: var(--ink);
   color: #EDE8DE;
@@ -176,7 +156,7 @@ a:hover { color: var(--main-dark); }
 }
 .footer-base a { color: #EDE8DE; }
 
-/* ---- Buttons ---- */
+/* Buttons */
 .btn {
   display: inline-block;
   padding: 0.6rem 1.15rem;
@@ -201,7 +181,7 @@ a:hover { color: var(--main-dark); }
 .btn-small { padding: 0.35rem 0.8rem; font-size: 0.875rem; }
 .btn-block { display: block; width: 100%; }
 
-/* ---- Wrapping card rows ---- */
+/* Cards */
 .cards {
   list-style: none;
   margin: 0 0 1.5rem;
@@ -220,7 +200,7 @@ a:hover { color: var(--main-dark); }
 }
 .card h3 { font-size: 1.1rem; }
 
-/* ---- Panels ---- */
+/* Panels */
 .panel {
   background: var(--card);
   border: 1px solid var(--line);
@@ -231,7 +211,7 @@ a:hover { color: var(--main-dark); }
 .panel-tint { background: var(--main-soft); border-color: var(--main); }
 .panel-accent { background: var(--accent-soft); border-color: var(--accent); }
 
-/* ---- Forms ---- */
+/* Forms */
 .field { margin-bottom: 1rem; }
 .field label { display: block; font-weight: 600; margin-bottom: 0.3rem; }
 .field .hint { font-size: 0.85rem; color: var(--ink-soft); }
@@ -255,11 +235,11 @@ input:focus, select:focus, textarea:focus {
 .form-row { display: flex; flex-wrap: wrap; gap: 1rem; }
 .form-row .field { flex: 1 1 12rem; min-width: 0; }
 
-/* Pure-CSS form confirmations: the form posts to #sent, :target reveals it */
+/* Form confirmation */
 .confirm { display: none; }
 .confirm:target { display: block; }
 
-/* ---- Tables: the table slides, not the page ---- */
+/* Tables */
 .table-scroll {
   overflow-x: auto;
   border: 1px solid var(--line);
@@ -278,11 +258,11 @@ table.data th, table.data td {
 table.data thead th { background: var(--main-soft); }
 table.data tr:last-child th, table.data tr:last-child td { border-bottom: 0; }
 
-/* ---- Breadcrumb ---- */
+/* Breadcrumbs */
 .crumbs { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 1rem; padding: 0; font-size: 0.9rem; }
 .crumbs li + li::before { content: "›"; margin-right: 0.4rem; color: var(--ink-soft); }
 
-/* ---- Badges, chips ---- */
+/* Badges and chips */
 .badge {
   display: inline-block;
   padding: 0.15rem 0.6rem;
@@ -309,11 +289,11 @@ table.data tr:last-child th, table.data tr:last-child td { border-bottom: 0; }
 }
 .chip-row a:hover { background: var(--main); border-color: var(--main); color: #fff; }
 
-/* ---- Page hero strip ---- */
+/* Page heading */
 .page-head { margin-bottom: 1.5rem; }
 .page-head p.lead { font-size: 1.05rem; color: var(--ink-soft); max-width: 44rem; }
 
-/* ---- Safety notice ---- */
+/* Safety notice */
 .safety {
   border: 2px solid var(--danger);
   background: var(--danger-soft);
@@ -324,7 +304,7 @@ table.data tr:last-child th, table.data tr:last-child td { border-bottom: 0; }
 .safety h2, .safety h3 { color: var(--danger); font-size: 1.05rem; }
 .safety ul { margin: 0.5rem 0 0; padding-left: 1.2rem; }
 
-/* ---- Fact lists ---- */
+/* Fact lists */
 .facts { margin: 0; padding: 0; list-style: none; }
 .facts li {
   display: flex;
@@ -335,7 +315,7 @@ table.data tr:last-child th, table.data tr:last-child td { border-bottom: 0; }
 }
 .facts li:last-child { border-bottom: 0; }
 
-/* ---- Utility ---- */
+/* Utilities */
 .visually-hidden {
   position: absolute;
   width: 1px; height: 1px;
@@ -345,7 +325,7 @@ table.data tr:last-child th, table.data tr:last-child td { border-bottom: 0; }
 }
 
 
-/* ==================== BLOCK 2 — HOME PAGE (Member ___) ==================== */
+/* Home page */
 
 .hero {
   background: var(--main);
@@ -386,7 +366,7 @@ table.data tr:last-child th, table.data tr:last-child td { border-bottom: 0; }
 }
 .stats-strip strong { font-size: 1.2rem; }
 
-/* trade cards reuse the shared .cards wrapping row */
+/* Trade cards */
 .trade-card { display: block; text-decoration: none; color: var(--ink); text-align: center; }
 .trade-card:hover { border-color: var(--main); }
 .trade-card .trade-icon {
@@ -432,7 +412,7 @@ table.data tr:last-child th, table.data tr:last-child td { border-bottom: 0; }
 .cta-band p { margin: 0; }
 
 
-/* ==================== BLOCK 3 — DIRECTORY + FUNDI PROFILE (Member ___) ==================== */
+/* Directory and profile */
 
 .worker-card { display: flex; flex-direction: column; }
 .worker-top { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
@@ -507,7 +487,7 @@ details.review-form .panel { margin-top: 0.75rem; }
 .contact-card .btn { margin-bottom: 0.6rem; }
 
 
-/* ==================== BLOCK 4 — JOIN + POST-A-JOB FORMS (Member ___) ==================== */
+/* Join and job forms */
 
 .radio-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
 .radio-pills label { margin: 0; }
@@ -550,7 +530,7 @@ details.review-form .panel { margin-top: 0.75rem; }
 }
 
 
-/* ==================== BLOCK 5 — ABOUT + CONTACT + COVERAGE (Member ___) ==================== */
+/* About, contact, and coverage */
 
 .zone-card h3 { font-size: 1.25rem; }
 .estates-list { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 1rem; padding: 0; list-style: none; }
@@ -587,9 +567,8 @@ details.review-form .panel { margin-top: 0.75rem; }
 }
 
 
-/* ==================== THE PHONE — one media query, LAST in this file (Member 1) ==================== */
+/* Mobile layout */
 @media (max-width: 700px) {
-  /* Single column: header, nav, main, aside, footer stack */
   body {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
@@ -607,5 +586,5 @@ details.review-form .panel { margin-top: 0.75rem; }
   .hero { padding: 1.75rem 1.1rem; }
   .card { flex-basis: 100%; }
   .footer-cols { gap: 1.25rem; }
-  table.data { min-width: 24rem; } /* table scrolls inside .table-scroll; page never does */
+  table.data { min-width: 24rem; }
 }
