@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Request a Verified Fundi in Nairobi — FundiMtaani</title>
+  <meta name="description" content="Post your job request in 30 seconds and connect with vetted local craftsmen in your estate.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="brand" href="index.html">FundiMtaani</a>
+    <p class="brand-tagline">Nairobi&rsquo;s verified local fundi directory</p>
+  </header>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="fundis.html">Browse Fundis</a></li>
+      <li><a href="request.html" aria-current="page">Post a Job</a></li>
+      <li><a href="coverage.html">Estates</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a class="nav-cta" href="join.html">List Your Trade &mdash; Free</a></li>
+    </ul>
+  </nav>
+
+  <main class="site-main">
+    <nav aria-label="Breadcrumb">
+      <ol class="crumbs">
+        <li><a href="index.html">Home</a></li>
+        <li aria-current="page">Post a Job</li>
+      </ol>
+    </nav>
+
+    <div class="page-head">
+      <h1>Request a Local Fundi in Nairobi</h1>
+      <p class="lead">Tell us what needs fixing and where. We match you with verified craftsmen in your estate &mdash; zero middleman fees.</p>
+    </div>
+
+    <section class="panel confirm" id="sent" aria-label="Job request confirmation">
+      <div class="success-hero">
+        <span class="big-tick" aria-hidden="true">✓</span>
+        <h2>Job Request Submitted!</h2>
+        <p>Thank you! Your request has been logged (demo). On the live site we would now match you with verified fundis in your estate.</p>
+        <p><a class="btn btn-primary" href="fundis.html">Browse Fundis Instead</a></p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="job-form-h">
+      <h2 id="job-form-h">Job Details</h2>
+      <form action="#sent" method="get">
+        <div class="form-row">
+          <div class="field">
+            <label for="r-cat">Trade needed *</label>
+            <select id="r-cat" name="trade" required>
+              <option value="">Select service trade</option>
+              <option value="Plumber">Plumber</option>
+              <option value="Electrician">Electrician</option>
+              <option value="Carpenter">Carpenter</option>
+              <option value="Welder">Welder</option>
+              <option value="Mechanic">Mechanic</option>
+              <option value="Cleaner">Cleaner</option>
+              <option value="Painter">Painter</option>
+              <option value="Mason">Mason</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="r-estate">Estate / area *</label>
+            <select id="r-estate" name="estate" required>
+              <option value="">Select estate</option>
+              <option value="Kasarani">Kasarani</option>
+              <option value="Kilimani">Kilimani</option>
+              <option value="Westlands">Westlands</option>
+              <option value="Umoja">Umoja</option>
+              <option value="Ruaka">Ruaka</option>
+              <option value="Embakasi">Embakasi</option>
+              <option value="Karen">Karen</option>
+              <option value="Kawangware">Kawangware</option>
+              <option value="South B">South B</option>
+              <option value="Ruai">Ruai</option>
+            </select>
+          </div>
+        </div>
+        <fieldset class="field">
+          <legend><strong>When do you need the service?</strong></legend>
+          <div class="radio-pills" role="radiogroup" aria-label="Schedule type">
+            <label><input type="radio" name="when" value="today" checked><span>Today</span></label>
+            <label><input type="radio" name="when" value="tomorrow"><span>Tomorrow</span></label>
+            <label><input type="radio" name="when" value="weekend"><span>This weekend</span></label>
+            <label><input type="radio" name="when" value="urgent"><span>Urgent</span></label>
+          </div>
+        </fieldset>
+        <div class="field">
+          <label for="r-desc">Describe the issue or task</label>
+          <textarea id="r-desc" name="description" rows="3" placeholder="e.g. My kitchen sink drain is overflowing..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="r-name">Your full name *</label>
+            <input id="r-name" name="name" type="text" required placeholder="e.g. Jane Mwangi">
+          </div>
+          <div class="field">
+            <label for="r-phone">Your WhatsApp / phone number *</label>
+            <input id="r-phone" name="phone" type="tel" required placeholder="e.g. 0712 345 678">
+          </div>
+        </div>
+        <button class="btn btn-accent btn-block" type="submit">Find Available Fundis Now</button>
+      </form>
+    </section>
+
+  </main>
+
+  <aside class="site-aside">
+    <section class="aside-card" aria-label="Why use FundiMtaani">
+      <h2>Why use FundiMtaani</h2>
+      <ul class="check-list">
+        <li><strong>Hyper-local:</strong> fundis stationed in your estate.</li>
+        <li><strong>Direct WhatsApp:</strong> no queues, no agency markup.</li>
+        <li><strong>Verified reviews:</strong> feedback from real neighbours.</li>
+      </ul>
+    </section>
+    <section class="aside-card" aria-label="Indicative prices">
+      <h2>Indicative prices</h2>
+      <ul class="facts">
+        <li><span>Leaking tap repair</span><strong>KSh 800–1,500</strong></li>
+        <li><span>Socket installation</span><strong>KSh 800–1,500</strong></li>
+        <li><span>2-bed deep clean</span><strong>KSh 3,500–6,000</strong></li>
+        <li><span>Door lock replacement</span><strong>KSh 800–1,500</strong></li>
+      </ul>
+      <p class="small muted">Final quotes are agreed directly with your fundi.</p>
+    </section>
+  </aside>
+
+  <footer class="site-footer">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h2>FundiMtaani</h2>
+        <p>Nairobi&rsquo;s dedicated local trade directory. Connect directly with vetted plumbers, electricians, carpenters and technicians in your neighbourhood &mdash; no middleman fees.</p>
+      </div>
+      <nav class="footer-col" aria-label="Popular trades">
+        <h2>Popular Trades</h2>
+        <ul>
+          <li><a href="fundis.html">Plumbers</a></li>
+          <li><a href="fundis.html">Electricians</a></li>
+          <li><a href="fundis.html">Carpenters</a></li>
+          <li><a href="fundis.html">Cleaners</a></li>
+          <li><a href="fundis.html">Painters</a></li>
+          <li><a href="fundis.html">Mechanics</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Site pages">
+        <h2>Explore</h2>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="fundis.html">Browse Fundis</a></li>
+          <li><a href="request.html">Post a Job</a></li>
+          <li><a href="coverage.html">Estate Coverage</a></li>
+          <li><a href="join.html">List Your Trade</a></li>
+        </ul>
+      </nav>
+      <div class="footer-col">
+        <h2>Support</h2>
+        <p>Questions about a listing? Reach the help desk on WhatsApp.</p>
+        <a class="btn btn-whatsapp" href="https://wa.me/254700000000" target="_blank" rel="noopener">WhatsApp Help Desk</a>
+      </div>
+    </div>
+    <p class="footer-base">&copy; 2026 FundiMtaani &middot; Nairobi, Kenya</p>
+  </footer>
+
+</body>
+</html>

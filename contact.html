@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact Us — FundiMtaani</title>
+  <meta name="description" content="Contact the FundiMtaani team: report a listing, ask about verification, or send feedback.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <a class="brand" href="index.html">FundiMtaani</a>
+    <p class="brand-tagline">Nairobi&rsquo;s verified local fundi directory</p>
+  </header>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="fundis.html">Browse Fundis</a></li>
+      <li><a href="request.html">Post a Job</a></li>
+      <li><a href="coverage.html">Estates</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html" aria-current="page">Contact</a></li>
+      <li><a class="nav-cta" href="join.html">List Your Trade &mdash; Free</a></li>
+    </ul>
+  </nav>
+
+  <main class="site-main">
+    <nav aria-label="Breadcrumb">
+      <ol class="crumbs">
+        <li><a href="index.html">Home</a></li>
+        <li aria-current="page">Contact</li>
+      </ol>
+    </nav>
+
+    <div class="page-head">
+      <h1>Contact Us</h1>
+      <p class="lead">Report a listing, ask about verification, or send feedback about the directory. We read every message.</p>
+    </div>
+
+    <section class="panel confirm" id="sent" aria-label="Message sent confirmation">
+      <div class="success-hero">
+        <span class="big-tick" aria-hidden="true">✓</span>
+        <h2>Message Sent!</h2>
+        <p>Thank you! Your message has been received (demo). On the live site we would reply within one working day.</p>
+        <p><a class="btn btn-primary" href="index.html">Return to Homepage</a></p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="contact-form-h">
+      <h2 id="contact-form-h">Send a message</h2>
+      <form action="#sent" method="get">
+        <div class="form-row">
+          <div class="field">
+            <label for="c-name">Your name *</label>
+            <input id="c-name" name="name" type="text" required maxlength="120" placeholder="e.g. Jane Mwangi">
+          </div>
+          <div class="field">
+            <label for="c-email">Email address *</label>
+            <input id="c-email" name="email" type="email" required maxlength="120" placeholder="you@example.com">
+          </div>
+        </div>
+        <div class="field">
+          <label for="c-subject">Subject *</label>
+          <select id="c-subject" name="subject" required>
+            <option value="">Choose a subject...</option>
+            <option value="report">Report a listing</option>
+            <option value="verification">Verification question</option>
+            <option value="feedback">Feedback on the site</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="c-message">Message *</label>
+          <textarea id="c-message" name="message" rows="5" required maxlength="2000" placeholder="How can we help?"></textarea>
+          <p class="hint">Please do not include bank details or passwords.</p>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Send Message</button>
+      </form>
+    </section>
+
+  </main>
+
+  <aside class="site-aside">
+    <section class="aside-card" aria-label="Other ways to reach us">
+      <h2>Other ways to reach us</h2>
+      <ul class="check-list">
+        <li><strong>WhatsApp help desk:</strong> <a href="https://wa.me/254700000000" target="_blank" rel="noopener">chat with us</a></li>
+        <li><strong>Response time:</strong> within 1 working day.</li>
+        <li><strong>Listing issues:</strong> include the fundi&rsquo;s name and estate.</li>
+      </ul>
+    </section>
+    <section class="aside-card" aria-label="Office hours">
+      <h2>Support hours</h2>
+      <ul class="facts">
+        <li><span>Mon &ndash; Fri</span><strong>8:00 &ndash; 18:00</strong></li>
+        <li><span>Saturday</span><strong>9:00 &ndash; 13:00</strong></li>
+        <li><span>Sunday</span><strong>Closed</strong></li>
+      </ul>
+    </section>
+  </aside>
+
+  <footer class="site-footer">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h2>FundiMtaani</h2>
+        <p>Nairobi&rsquo;s dedicated local trade directory. Connect directly with vetted plumbers, electricians, carpenters and technicians in your neighbourhood &mdash; no middleman fees.</p>
+      </div>
+      <nav class="footer-col" aria-label="Popular trades">
+        <h2>Popular Trades</h2>
+        <ul>
+          <li><a href="fundis.html">Plumbers</a></li>
+          <li><a href="fundis.html">Electricians</a></li>
+          <li><a href="fundis.html">Carpenters</a></li>
+          <li><a href="fundis.html">Cleaners</a></li>
+          <li><a href="fundis.html">Painters</a></li>
+          <li><a href="fundis.html">Mechanics</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Site pages">
+        <h2>Explore</h2>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="fundis.html">Browse Fundis</a></li>
+          <li><a href="request.html">Post a Job</a></li>
+          <li><a href="coverage.html">Estate Coverage</a></li>
+          <li><a href="join.html">List Your Trade</a></li>
+        </ul>
+      </nav>
+      <div class="footer-col">
+        <h2>Support</h2>
+        <p>Questions about a listing? Reach the help desk on WhatsApp.</p>
+        <a class="btn btn-whatsapp" href="https://wa.me/254700000000" target="_blank" rel="noopener">WhatsApp Help Desk</a>
+      </div>
+    </div>
+    <p class="footer-base">&copy; 2026 FundiMtaani &middot; Nairobi, Kenya</p>
+  </footer>
+
+</body>
+</html>
