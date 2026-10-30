@@ -1,4 +1,11 @@
 /* Shared styles */
+/* House style 
+   main: #0F4C3A
+   ground: #FAF7F1
+   ink: #1C1917
+   accent: #D97706
+   headings: Georgia, 'Times New Roman', serif
+   body: system-ui, -apple-system, sans-serif */
 :root {
   --main: #0F4C3A;
   --main-dark: #0A3327;
