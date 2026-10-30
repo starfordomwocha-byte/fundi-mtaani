@@ -6,6 +6,7 @@
    accent: #D97706
    headings: Georgia, 'Times New Roman', serif
    body: system-ui, -apple-system, sans-serif */
+
 :root {
   --main: #0F4C3A;
   --main-dark: #0A3327;
@@ -27,7 +28,7 @@
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* Base styles */
+/* 1 - house style */
 *, *::before, *::after { box-sizing: border-box; }
 
 html { -webkit-text-size-adjust: 100%; }
@@ -72,7 +73,7 @@ a:hover { color: var(--main-dark); }
 .pre-line { white-space: pre-line; }
 .hidden { display: none; }
 
-/* Page grid */
+/* 2 - layout */
 .site-header { grid-area: header; }
 .site-nav    { grid-area: nav; }
 .site-main   { grid-area: main; min-width: 0; padding: 1.5rem clamp(1rem, 4vw, 2.5rem); }
@@ -335,7 +336,7 @@ table.data tr:last-child th, table.data tr:last-child td { border-bottom: 0; }
 }
 
 
-/* Home page */
+/* 3 - index.html */
 
 .hero {
   background: var(--main);
@@ -422,8 +423,7 @@ table.data tr:last-child th, table.data tr:last-child td { border-bottom: 0; }
 .cta-band p { margin: 0; }
 
 
-/* Directory and profile */
-
+/* 4 - fundis.html, fundi.html */
 .worker-card { display: flex; flex-direction: column; }
 .worker-top { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
 .avatar {
