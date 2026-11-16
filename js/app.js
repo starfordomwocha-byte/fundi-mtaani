@@ -12,7 +12,7 @@ function loadStore() {
   } catch (e) { /* storage is empty or broken, start fresh */ }
   return {
     users: [
-      // Demo account, so you can test login straight away
+      // Demo account
       { name: "Starford Omwocha", email: "starford@fundimtaani.me", phone: "254799242459", estate: "Langata", password: "fundimtaani123", verified: true }
     ],
     bookings: [],
