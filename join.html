@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join as Fundi - FundiMtaani</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-main">
+      <h1>FundiMtaani</h1>
+      <nav class="navbar" aria-label="Main Navigation">
+        <a href="index.html">Home</a>
+        <a href="fundis.html">Browse Fundis</a>
+        <a href="join.html">Join as Fundi</a>
+        <a href="bookings.html">My Bookings</a>
+        <a href="admin.html">Admin</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="form-card">
+      <h2>Join as a fundi</h2>
+      <p>Apply to list your trade in Langata, Madaraka or Nairobi West. Your profile stays hidden until Admin approves it. You need a customer account first, then apply here.</p>
+      <p id="join-message"></p>
+
+      <form id="join-form" action="#" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="fullname">Full name</label>
+          <input type="text" id="fullname" name="fullname" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" name="phone" placeholder="0712 345 678" required>
+        </div>
+
+        <div class="form-group">
+          <label for="trade">Your trade</label>
+          <select id="trade" name="trade" required>
+            <option value="">Choose your trade</option>
+            <option>Plumbing</option>
+            <option>Electrical</option>
+            <option>Carpentry</option>
+            <option>Painting</option>
+            <option>Cleaning</option>
+            <option>Welding</option>
+            <option>Mechanics</option>
+            <option>Masonry</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="estate">Your estate</label>
+          <select id="estate" name="estate" required>
+            <option value="">Choose your estate</option>
+            <option>Langata</option>
+            <option>Madaraka</option>
+            <option>Nairobi West</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="experience">Years of experience</label>
+          <input type="number" id="experience" name="experience" min="0" max="50" placeholder="e.g. 8" required>
+        </div>
+
+        <div class="form-group">
+          <label for="rate">Your rate</label>
+          <input type="text" id="rate" name="rate" placeholder="e.g. From KSh 800 per visit" required>
+        </div>
+
+        <div class="form-group">
+          <label for="bio">Short bio / services you offer</label>
+          <textarea id="bio" name="bio" rows="4" placeholder="e.g. Plumber for leaks, tanks and toilets, same-day service in Langata" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="photo">Your photo</label>
+          <input type="file" id="photo" name="photo" accept="image/*" required>
+        </div>
+
+        <div class="form-group">
+          <label for="id-doc">ID document</label>
+          <input type="file" id="id-doc" name="id-doc" accept="image/*,.pdf" required>
+          <small>Admin checks your photo and ID before approving you.</small>
+        </div>
+
+        <button type="submit">Submit application</button>
+      </form>
+
+      <p>Already applied? Your profile will appear under <a href="fundis.html">Browse Fundis</a> once Admin approves it.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h3>FundiMtaani</h3>
+        <p>Connecting you with skilled fundis in your neighbourhood with no middleman fees. You pay the Fundi directly.</p>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="fundis.html">Browse Fundis</a></li>
+          <li><a href="join.html">Join as Fundi</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-base">&copy; 2026 FundiMtaani. All rights reserved.</p>
+  </footer>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
