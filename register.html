@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - FundiMtaani</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-main">
+      <h1>FundiMtaani</h1>
+      <nav class="navbar" aria-label="Main Navigation">
+        <a href="index.html">Home</a>
+        <a href="fundis.html">Browse Fundis</a>
+        <a href="join.html">Join as Fundi</a>
+        <a href="bookings.html">My Bookings</a>
+        <a href="admin.html">Admin</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="form-card">
+      <h2>Create your account</h2>
+      <p>You need an account to book a fundi. Browsing is free, no signup needed.</p>
+      <p id="register-message"></p>
+
+      <!-- Step 1: Register -->
+      <form id="register-form" action="#" method="post">
+        <div class="form-group">
+          <label for="fullname">Full name</label>
+          <input type="text" id="fullname" name="fullname" placeholder="e.g. Starford Omwocha" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+          <small>We will send a verification code to this email.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" name="phone" placeholder="0712 345 678" required>
+          <small>Required so the fundi can call you. Your phone is not verified by code.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="estate">Your estate</label>
+          <select id="estate" name="estate">
+            <option value="">Choose your estate</option>
+            <option>Langata</option>
+            <option>Madaraka</option>
+            <option>Nairobi West</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" minlength="8" placeholder="At least 8 characters" required>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirm password</label>
+          <input type="password" id="confirm-password" name="confirm-password" minlength="8" required>
+        </div>
+
+        <button type="submit">Create account</button>
+      </form>
+
+      <p>Already have an account? <a href="login.html">Log in</a></p>
+    </section>
+
+    <!-- Step 2: Verify email -->
+    <section class="form-card">
+      <h2>Verify your email</h2>
+      <p>Enter the 6-digit code sent to your email to activate your account.</p>
+      <p id="demo-code"></p>
+      <p id="verify-message"></p>
+
+      <form id="verify-form" action="login.html" method="post">
+        <div class="form-group">
+          <label for="code">Verification code</label>
+          <input type="text" id="code" name="code" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="123456" required>
+        </div>
+
+        <button type="submit">Verify and continue</button>
+      </form>
+
+      <p><a href="#">Resend code</a></p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h3>FundiMtaani</h3>
+        <p>Connecting you with skilled fundis in your neighbourhood with no middleman fees. You pay the Fundi directly.</p>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="fundis.html">Browse Fundis</a></li>
+          <li><a href="join.html">Join as Fundi</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-base">&copy; 2026 FundiMtaani. All rights reserved.</p>
+  </footer>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

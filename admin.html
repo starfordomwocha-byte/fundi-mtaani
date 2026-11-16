@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - FundiMtaani</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-main">
+      <h1>FundiMtaani Admin</h1>
+      <nav class="navbar" aria-label="Main Navigation">
+        <a href="index.html">View site</a>
+        <a href="fundis.html">Fundis</a>
+        <a href="bookings.html">Bookings</a>
+        <a href="admin.html">Admin</a>
+        <a href="login.html">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <h2>Admin dashboard</h2>
+      <p>Admin has full control: approve or reject fundis, manage categories, bookings, reviews and customers.</p>
+      <div class="admin-stats">
+        <article class="card"><h3>10</h3><p>Approved fundis</p></article>
+        <article class="card"><h3>2</h3><p>Pending applications</p></article>
+        <article class="card"><h3>4</h3><p>Bookings</p></article>
+        <article class="card"><h3>8</h3><p>Categories</p></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Pending fundi applications</h2>
+      <table class="table">
+        <thead>
+          <tr><th>Name</th><th>Trade</th><th>Estate</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>David Kamau</td><td>Electrical</td><td>Madaraka</td><td><a href="#">Approve</a> &middot; <a href="#">Reject</a></td></tr>
+          <tr><td>Faith Achieng</td><td>Cleaning</td><td>Nairobi West</td><td><a href="#">Approve</a> &middot; <a href="#">Reject</a></td></tr>
+        </tbody>
+      </table>
+      <p><small>New fundis stay hidden until Admin approves them. A rejection needs a reason.</small></p>
+    </section>
+
+    <section class="section">
+      <h2>Fundis</h2>
+      <table class="table">
+        <thead>
+          <tr><th>Name</th><th>Trade</th><th>Estate</th><th>Rating</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>James Mwangi</td><td>Plumbing</td><td>Langata</td><td>4.8</td><td>Approved</td></tr>
+          <tr><td>Grace Njeri</td><td>Cleaning</td><td>Langata</td><td>4.9</td><td>Approved</td></tr>
+          <tr><td>Brian Otieno</td><td>Electrical</td><td>Nairobi West</td><td>4.8</td><td>Approved</td></tr>
+          <tr><td>Peter Mwangi</td><td>Carpentry</td><td>Madaraka</td><td>4.6</td><td>Approved</td></tr>
+        </tbody>
+      </table>
+      <p><a href="fundis.html">See all 10 fundis</a></p>
+    </section>
+
+    <section class="section">
+      <h2>Bookings</h2>
+      <table class="table">
+        <thead>
+          <tr><th>Customer</th><th>Fundi</th><th>Job</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Starford Omwocha</td><td>James Mwangi</td><td>Fix leaking tank</td><td>Completed</td></tr>
+          <tr><td>Starford Omwocha</td><td>Brian Otieno</td><td>Rewire kitchen</td><td>Accepted</td></tr>
+          <tr><td>Starford Omwocha</td><td>Grace Njeri</td><td>Deep clean house</td><td>Pending</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Fundi categories</h2>
+      <ul>
+        <li>Plumbing &middot; <a href="#">Edit</a> &middot; <a href="#">Delete</a></li>
+        <li>Electrical &middot; <a href="#">Edit</a> &middot; <a href="#">Delete</a></li>
+        <li>Carpentry &middot; <a href="#">Edit</a> &middot; <a href="#">Delete</a></li>
+        <li>Painting &middot; <a href="#">Edit</a> &middot; <a href="#">Delete</a></li>
+        <li>Cleaning &middot; <a href="#">Edit</a> &middot; <a href="#">Delete</a></li>
+        <li>Welding &middot; <a href="#">Edit</a> &middot; <a href="#">Delete</a></li>
+        <li>Mechanics &middot; <a href="#">Edit</a> &middot; <a href="#">Delete</a></li>
+        <li>Masonry &middot; <a href="#">Edit</a> &middot; <a href="#">Delete</a></li>
+      </ul>
+      <form action="#" method="post">
+        <div class="form-group">
+          <label for="new-category">Add a category</label>
+          <input type="text" id="new-category" name="category" placeholder="e.g. Gardening">
+        </div>
+        <button type="submit">Add category</button>
+      </form>
+    </section>
+
+    <section class="section">
+      <h2>Reviews</h2>
+      <p>Admin can remove a review. The fundi rating is recalculated after removal.</p>
+      <ul>
+        <li>"James fixed our leaking tank the same day." &middot; Mary N., 5 stars &middot; <a href="#">Remove</a></li>
+        <li>"Deep cleaned our 3-bedroom before moving in." &middot; Lucy B., 5 stars &middot; <a href="#">Remove</a></li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Customers</h2>
+      <table class="table">
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Status</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Starford Omwocha</td><td>demo@fundimtaani.co.ke</td><td>Active</td><td><a href="#">Suspend</a></td></tr>
+          <tr><td>Mary N.</td><td>mary@example.com</td><td>Suspended</td><td><a href="#">Reactivate</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2>Reports</h2>
+      <p>Completed bookings: 1 &middot; Accepted: 1 &middot; Pending: 1 &middot; Job Done: 1</p>
+      <p><a href="index.html">Back to site</a></p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h3>FundiMtaani</h3>
+        <p>Connecting you with skilled fundis in your neighbourhood with no middleman fees. You pay the Fundi directly.</p>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="fundis.html">Browse Fundis</a></li>
+          <li><a href="join.html">Join as Fundi</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-base">&copy; 2026 FundiMtaani. All rights reserved.</p>
+  </footer>
+</body>
+</html>

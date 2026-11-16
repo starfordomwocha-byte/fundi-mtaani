@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Fundi - FundiMtaani</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-main">
+      <h1>FundiMtaani</h1>
+      <nav class="navbar" aria-label="Main Navigation">
+        <a href="index.html">Home</a>
+        <a href="fundis.html">Browse Fundis</a>
+        <a href="join.html">Join as Fundi</a>
+        <a href="bookings.html">My Bookings</a>
+        <a href="admin.html">Admin</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="form-card">
+      <h2>Book a fundi</h2>
+      <p id="book-message"></p>
+      <p>Booking needs a logged-in account. If you are not logged in yet, <a href="login.html">log in</a> or <a href="register.html">create an account</a> first.</p>
+
+      <form id="book-form" action="bookings.html" method="post">
+        <div class="form-group">
+          <label for="fundi">Fundi</label>
+          <select id="fundi" name="fundi" required>
+            <option value="">Choose a fundi</option>
+            <option>James Mwangi - Plumbing, Langata</option>
+            <option>John Kariuki - Plumbing, Langata</option>
+            <option>Brian Otieno - Electrical, Nairobi West</option>
+            <option>Grace Njeri - Cleaning, Langata</option>
+            <option>Peter Mwangi - Carpentry, Madaraka</option>
+            <option>Samuel Ochieng - Welding, Nairobi West</option>
+            <option>Kevin Mutua - Mechanics, Langata</option>
+            <option>Alice Wanjiku - Painting, Madaraka</option>
+            <option>Hassan Abdi - Masonry, Madaraka</option>
+            <option>Dennis Kiprop - Plumbing, Nairobi West</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="service">What needs doing?</label>
+          <textarea id="service" name="service" rows="4" placeholder="e.g. Kitchen tap is leaking and the tank overflows" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Preferred date</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+
+        <div class="form-group">
+          <label for="time">Preferred time</label>
+          <select id="time" name="time" required>
+            <option value="">Choose a time</option>
+            <option>Morning (8am - 12pm)</option>
+            <option>Afternoon (12pm - 4pm)</option>
+            <option>Evening (4pm - 7pm)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="estate">Estate</label>
+          <select id="estate" name="estate" required>
+            <option value="">Choose your estate</option>
+            <option>Langata</option>
+            <option>Madaraka</option>
+            <option>Nairobi West</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address / location</label>
+          <input type="text" id="address" name="address" placeholder="House number, street or landmark" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" name="phone" placeholder="0712 345 678" required>
+        </div>
+
+        <button type="submit">Send booking request</button>
+      </form>
+
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h3>FundiMtaani</h3>
+        <p>Connecting you with skilled fundis in your neighbourhood with no middleman fees. You pay the Fundi directly.</p>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="fundis.html">Browse Fundis</a></li>
+          <li><a href="join.html">Join as Fundi</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-base">&copy; 2026 FundiMtaani. All rights reserved.</p>
+  </footer>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

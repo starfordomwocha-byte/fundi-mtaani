@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - FundiMtaani</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-main">
+      <h1>FundiMtaani</h1>
+      <nav class="navbar" aria-label="Main Navigation">
+        <a href="index.html">Home</a>
+        <a href="fundis.html">Browse Fundis</a>
+        <a href="join.html">Join as Fundi</a>
+        <a href="bookings.html">My Bookings</a>
+        <a href="admin.html">Admin</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <h2>My bookings</h2>
+      <p>A booking can be Declined while it is Pending. The fundi marks the job done, and you confirm completion.</p>
+      <p><a class="btn" href="book.html">Book a fundi</a></p>
+      <div id="bookings-list"></div>
+      <p id="bookings-message"></p>
+    </section>
+
+    <section class="section">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Fundi</th>
+            <th>Job</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>James Mwangi</td>
+            <td>Fix leaking water tank</td>
+            <td>28 Oct 2026</td>
+            <td><span class="status status-completed">Completed</span></td>
+            <td><a href="fundi.html">Leave a review</a></td>
+          </tr>
+          <tr>
+            <td>Brian Otieno</td>
+            <td>Rewire kitchen sockets</td>
+            <td>12 Nov 2026</td>
+            <td><span class="status status-accepted">Accepted</span></td>
+            <td>Waiting for the fundi</td>
+          </tr>
+          <tr>
+            <td>Grace Njeri</td>
+            <td>Deep clean 3-bedroom house</td>
+            <td>15 Nov 2026</td>
+            <td><span class="status status-pending">Pending</span></td>
+            <td>Waiting for the fundi to accept</td>
+          </tr>
+          <tr>
+            <td>Alice Wanjiku</td>
+            <td>Paint sitting room</td>
+            <td>10 Nov 2026</td>
+            <td><span class="status status-jobdone">Job Done</span></td>
+            <td><a href="#">Confirm completion</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <p><small>Reviews can only be left after a completed booking, one review per booking.</small></p>
+      <p>Not logged in? <a href="login.html">Log in</a> to see your bookings.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h3>FundiMtaani</h3>
+        <p>Connecting you with skilled fundis in your neighbourhood with no middleman fees. You pay the Fundi directly.</p>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="fundis.html">Browse Fundis</a></li>
+          <li><a href="join.html">Join as Fundi</a></li>
+          <li><a href="bookings.html">My Bookings</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-base">&copy; 2026 FundiMtaani. All rights reserved.</p>
+  </footer>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
