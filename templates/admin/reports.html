@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}Reports — Admin — FundiMtaani{% endblock %}
+
+{% block content %}
+
+<section class="container py-4">
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2 border-bottom pb-3">
+    <div>
+      <h1 class="h4 fw-bold mb-0 text-dark">Reports</h1>
+      <p class="small text-muted mb-0">Counts and breakdowns across customers, fundis, bookings and reviews.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('export_bookings') }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1">
+        {{ icons.icon('download', size=14) }} Export Bookings CSV
+      </a>
+      <a href="{{ url_for('export_workers') }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1">
+        {{ icons.icon('download', size=14) }} Export Fundis CSV
+      </a>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Dashboard</a>
+      <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-danger">Logout</a>
+    </div>
+  </div>
+
+  <!-- Headline counts -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+      <div class="admin-metric-card">
+        <div class="admin-metric-icon primary">{{ icons.icon('users', size=24) }}</div>
+        <div>
+          <div class="admin-metric-number">{{ customers_total }}</div>
+          <div class="admin-metric-label">Customers ({{ customers_verified }} verified, {{ customers_suspended }} suspended)</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="admin-metric-card">
+        <div class="admin-metric-icon accent">{{ icons.icon('briefcase', size=24) }}</div>
+        <div>
+          <div class="admin-metric-number">{{ fundis_by_trade|map(attribute=1)|sum }}</div>
+          <div class="admin-metric-label">Approved Fundis</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="admin-metric-card">
+        <div class="admin-metric-icon info">{{ icons.icon('calendar', size=24) }}</div>
+        <div>
+          <div class="admin-metric-number">{{ bookings_total }}</div>
+          <div class="admin-metric-label">Total Bookings</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="admin-metric-card">
+        <div class="admin-metric-icon success">{{ icons.icon('star-fill', size=24) }}</div>
+        <div>
+          <div class="admin-metric-number">{{ reviews_total }}</div>
+          <div class="admin-metric-label">Reviews (avg {{ "%.1f"|format(avg_rating) if avg_rating else '—' }}/5)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Fundis by trade -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white h-100">
+        <h5 class="fw-bold text-dark mb-3">Fundis by Trade (Approved)</h5>
+        {% if fundis_by_trade %}
+        <table class="table table-sm mb-0">
+          <thead><tr><th>Trade</th><th class="text-end">Fundis</th></tr></thead>
+          <tbody>
+            {% for name, count in fundis_by_trade %}
+            <tr><td>{{ name }}</td><td class="text-end"><strong>{{ count }}</strong></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted mb-0">No approved fundis yet.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Fundis by estate -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white h-100">
+        <h5 class="fw-bold text-dark mb-3">Fundis by Estate (Approved)</h5>
+        {% if fundis_by_estate %}
+        <table class="table table-sm mb-0">
+          <thead><tr><th>Estate</th><th class="text-end">Fundis</th></tr></thead>
+          <tbody>
+            {% for estate, count in fundis_by_estate %}
+            <tr><td>{{ estate }}</td><td class="text-end"><strong>{{ count }}</strong></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted mb-0">No approved fundis yet.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Bookings by status -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white h-100">
+        <h5 class="fw-bold text-dark mb-3">Bookings by Status</h5>
+        <table class="table table-sm mb-0">
+          <thead><tr><th>Status</th><th class="text-end">Bookings</th></tr></thead>
+          <tbody>
+            <tr><td>Pending</td><td class="text-end"><strong>{{ bookings_by_status.get('pending', 0) }}</strong></td></tr>
+            <tr><td>Accepted</td><td class="text-end"><strong>{{ bookings_by_status.get('accepted', 0) }}</strong></td></tr>
+            <tr><td>Declined</td><td class="text-end"><strong>{{ bookings_by_status.get('declined', 0) }}</strong></td></tr>
+            <tr><td>Job Done</td><td class="text-end"><strong>{{ bookings_by_status.get('job_done', 0) }}</strong></td></tr>
+            <tr><td>Completed</td><td class="text-end"><strong>{{ bookings_by_status.get('completed', 0) }}</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Top rated fundis -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white h-100">
+        <h5 class="fw-bold text-dark mb-3">Top Rated Fundis</h5>
+        {% if top_fundis %}
+        <table class="table table-sm mb-0">
+          <thead><tr><th>Fundi</th><th class="text-end">Avg Rating</th><th class="text-end">Reviews</th></tr></thead>
+          <tbody>
+            {% for worker, avg, count in top_fundis %}
+            <tr>
+              <td><a href="{{ url_for('worker_detail', worker_id=worker.id) }}" target="_blank" class="text-dark text-decoration-none">{{ worker.name }}</a></td>
+              <td class="text-end"><strong>{{ "%.1f"|format(avg) }}</strong></td>
+              <td class="text-end">{{ count }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted mb-0">No reviews yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</section>
+
+{% endblock %}

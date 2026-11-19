@@ -1,0 +1,89 @@
+{% import "_icons.html" as icons %}
+
+<div class="col-md-6 col-lg-4">
+  <div class="worker-card-modern">
+
+    <!-- Top Status Row: every fundi shown here is approved, so the
+         Verified badge is honest — it means Admin checked their ID. -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div class="d-flex align-items-center gap-1 flex-wrap">
+        <span class="badge-standard-pill">
+          {{ icons.icon('shield-check', size=13) }} Verified
+        </span>
+      </div>
+    </div>
+
+    <!-- Worker Identity & Details -->
+    <div class="d-flex align-items-start gap-3 mb-3">
+      {% if w.photo_filename %}
+      <img src="{{ url_for('uploaded_file', filename=w.photo_filename) }}" alt="Photo of {{ w.name }}" class="worker-avatar" style="object-fit: cover; padding: 0;">
+      {% else %}
+      <div class="worker-avatar">{{ w.initials }}</div>
+      {% endif %}
+
+      <div class="min-w-0 flex-grow-1">
+        <h6 class="fw-bold mb-1 text-truncate text-dark">{{ w.name }}</h6>
+
+        <div class="d-flex flex-wrap gap-1 mb-1">
+          <span class="trade-chip">
+            {{ icons.icon(w.category.slug, size=13) }} {{ w.category.name }}
+          </span>
+          <span class="estate-chip">
+            {{ icons.icon('map-pin', size=12) }} {{ w.estate }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rating & Experience Strip -->
+    <div class="d-flex align-items-center justify-content-between mb-2 small">
+      <div class="d-flex align-items-center gap-1">
+        {% if w.avg_rating %}
+          <div class="rating-stars-gold">
+            {% for i in range(1, 6) %}
+              {% if i <= w.avg_rating|round|int %}
+                {{ icons.icon('star-fill', size=13) }}
+              {% else %}
+                {{ icons.icon('star-empty', size=13) }}
+              {% endif %}
+            {% endfor %}
+          </div>
+          <strong class="text-dark ms-1">{{ "%.1f"|format(w.avg_rating) }}</strong>
+          <span class="text-muted">({{ w.review_count }})</span>
+        {% else %}
+          <span class="text-muted small">New Listing &middot; 0 Reviews</span>
+        {% endif %}
+      </div>
+
+      {% if w.experience %}
+      <span class="small text-muted">{{ icons.icon('clock', size=12) }} {{ w.experience }} exp</span>
+      {% endif %}
+    </div>
+
+    <!-- Pricing Indicator -->
+    {% if w.rate %}
+    <div class="mb-3">
+      <span class="price-indicator">
+        {{ icons.icon('tag', size=13) }} {{ w.rate }}
+      </span>
+    </div>
+    {% else %}
+    <div class="mb-3">
+      <span class="price-indicator text-muted">
+        {{ icons.icon('tag', size=13) }} Standard Market Rates
+      </span>
+    </div>
+    {% endif %}
+
+    <!-- Actions Footer -->
+    <div class="d-flex gap-2 mt-auto pt-2 border-top">
+      <a href="{{ url_for('worker_detail', worker_id=w.id) }}" class="btn btn-brand-primary btn-sm flex-grow-1">
+        View Profile
+      </a>
+      <a href="{{ w.whatsapp_link() }}" target="_blank" rel="noopener" class="btn btn-whatsapp-solid btn-sm px-3" aria-label="WhatsApp {{ w.name }}" title="Chat on WhatsApp">
+        {{ icons.icon('whatsapp', size=18) }} <span>WhatsApp</span>
+      </a>
+    </div>
+
+  </div>
+</div>

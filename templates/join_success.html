@@ -1,0 +1,49 @@
+{# Shown after a fundi application is submitted: what happens next (Admin checks the ID, then approves or rejects). #}
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}Application Received — FundiMtaani Nairobi{% endblock %}
+
+{% block content %}
+
+<section class="container py-5 text-center">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+
+      <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-white">
+
+        <div class="category-icon-wrapper mx-auto mb-3" style="width: 64px; height: 64px; background-color: var(--color-success-light); color: var(--color-success);">
+          {{ icons.icon('check-circle', size=36) }}
+        </div>
+
+        <h1 class="h3 fw-bold text-dark mb-2">Application Submitted!</h1>
+        <p class="text-muted mb-4">
+          Thank you for applying to FundiMtaani. The admin will check your ID document and review your application. Your profile stays hidden until it is approved.
+        </p>
+
+        {% if worker %}
+        <div class="bg-light p-3 rounded-3 text-start mb-4 border">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <strong class="text-dark">{{ worker.name }}</strong>
+            <span class="badge bg-white text-dark border">{{ worker.category.name }}</span>
+          </div>
+          <p class="small text-muted mb-0">
+            {{ icons.icon('map-pin', size=13) }} {{ worker.estate }} &middot; {{ icons.icon('phone', size=13) }} {{ worker.phone }}
+          </p>
+        </div>
+        {% endif %}
+
+        <div class="d-flex flex-column gap-2">
+          <a href="{{ url_for('join') }}" class="btn btn-brand-primary w-100">Check My Application Status</a>
+          <a href="{{ url_for('index') }}" class="btn btn-brand-outline w-100">
+            Return to Homepage &rarr;
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

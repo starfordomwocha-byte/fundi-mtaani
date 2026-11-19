@@ -1,0 +1,95 @@
+{# Admin page: every customer account, with Suspend and Reactivate. Suspending hides that customer's fundi profile. #}
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}Customers — Admin — FundiMtaani{% endblock %}
+
+{% block content %}
+
+<section class="container py-4">
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2 border-bottom pb-3">
+    <div>
+      <h1 class="h4 fw-bold mb-0 text-dark">Customers</h1>
+      <p class="small text-muted mb-0">Every customer account. Suspend an account to hide its fundi profile and block its logins; reactivate it to restore both. Nothing is ever deleted here.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Dashboard</a>
+      <a href="{{ url_for('admin_reports') }}" class="btn btn-sm btn-outline-secondary">Reports</a>
+      <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-danger">Logout</a>
+    </div>
+  </div>
+
+  {% if customers %}
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+    <div class="table-responsive">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th style="min-width: 180px;">Customer</th>
+            <th style="min-width: 180px;">Email &amp; Phone</th>
+            <th style="min-width: 140px;">Email Verified</th>
+            <th style="min-width: 180px;">Fundi Profile</th>
+            <th style="min-width: 120px;">Joined</th>
+            <th class="text-end" style="min-width: 160px;">Account</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in customers %}
+          <tr>
+            <td style="min-width: 180px;">
+              <strong class="text-dark d-block">{{ u.full_name }}</strong>
+              {% if not u.is_active %}
+              <span class="badge bg-danger mt-1">Suspended</span>
+              {% else %}
+              <span class="badge bg-success mt-1">Active</span>
+              {% endif %}
+            </td>
+            <td style="min-width: 180px;">
+              <span class="small d-block">{{ u.email }}</span>
+              <span class="small text-muted">{{ u.phone }}</span>
+            </td>
+            <td style="min-width: 140px;">
+              {% if u.is_email_verified %}
+              <span class="badge bg-success">Verified</span>
+              {% else %}
+              <span class="badge bg-warning text-dark">Not verified</span>
+              {% endif %}
+            </td>
+            <td style="min-width: 180px;">
+              {% if u.fundi_profile %}
+              <a href="{{ url_for('worker_detail', worker_id=u.fundi_profile.id) }}" target="_blank" class="text-dark fw-semibold text-decoration-none small d-block">{{ u.fundi_profile.name }}</a>
+              <span class="small text-muted">{{ u.fundi_profile.category.name }} &middot; {{ u.fundi_profile.estate }} &middot; {{ u.fundi_profile.status }}</span>
+              {% else %}
+              <span class="small text-muted">No fundi profile</span>
+              {% endif %}
+            </td>
+            <td class="small text-muted" style="min-width: 120px;">{{ u.created_at.strftime('%d %b %Y') }}</td>
+            <td class="text-end" style="min-width: 160px;">
+              {% if u.is_active %}
+              <form method="post" action="{{ url_for('admin_customer_suspend', user_id=u.id) }}" class="d-inline" onsubmit="return confirm('Suspend {{ u.full_name }}? They will not be able to log in, and their fundi profile (if any) will be hidden.');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger">Suspend</button>
+              </form>
+              {% else %}
+              <form method="post" action="{{ url_for('admin_customer_reactivate', user_id=u.id) }}" class="d-inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-success">Reactivate</button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="card border-0 shadow-sm p-4 text-center text-muted bg-white rounded-3">
+    <p class="mb-0">No customer accounts yet.</p>
+  </div>
+  {% endif %}
+
+</section>
+
+{% endblock %}

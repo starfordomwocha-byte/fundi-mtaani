@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}
+{{ w.name }} — {{ w.category.name }} in {{ w.estate }}, Nairobi | FundiMtaani
+{% endblock %}
+
+{% block meta_description %}
+Hire {{ w.name }}, verified {{ w.category.name.lower() }} based in {{ w.estate }}, Nairobi. {% if reviews %}Rated {{ "%.1f"|format(w.avg_rating) }}/5 from {{ w.review_count }} reviews on completed bookings.{% endif %} Direct WhatsApp and phone contact.
+{% endblock %}
+
+{% block content %}
+
+<section class="container py-4">
+  <!-- Breadcrumb Navigation -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb small mb-3">
+      <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{{ url_for('fundis', category=w.category.slug) }}">{{ w.category.name }}s</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ w.name }}</li>
+    </ol>
+  </nav>
+
+  <!-- Success Notification after booking -->
+  {% if booked %}
+  <div class="alert alert-success d-flex align-items-start gap-3 shadow-sm mb-4">
+    {{ icons.icon('check-circle', size=22) }}
+    <div>
+      <h6 class="fw-bold mb-1">Booking Sent Successfully!</h6>
+      <p class="small mb-2">Your booking for {{ w.name }} is Pending. They will accept or decline it, and you will be notified by email. You can follow it in <a href="{{ url_for('my_bookings') }}">My Bookings</a>. For an instant response, reach out via WhatsApp directly:</p>
+      <a href="{{ w.whatsapp_link() }}" target="_blank" rel="noopener" class="btn btn-whatsapp-solid btn-sm">
+        {{ icons.icon('whatsapp', size=16) }} Open WhatsApp Chat with {{ w.name.split()[0] }}
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="row g-4">
+
+    <!-- Main Left Column: Profile Details & Reviews -->
+    <div class="col-lg-8">
+
+      <!-- Profile Header Card -->
+      <div class="profile-hero-card mb-4">
+        <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap">
+          <div class="d-flex align-items-center gap-3">
+            {% if w.photo_filename %}
+            <img src="{{ url_for('uploaded_file', filename=w.photo_filename) }}" alt="Photo of {{ w.name }}" class="worker-avatar worker-avatar-lg" style="object-fit: cover; padding: 0;">
+            {% else %}
+            <div class="worker-avatar worker-avatar-lg">{{ w.initials }}</div>
+            {% endif %}
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <h1 class="h3 fw-bold mb-0 text-dark">{{ w.name }}</h1>
+                <span class="badge-standard-pill">
+                  {{ icons.icon('shield-check', size=13) }} Verified
+                </span>
+              </div>
+              <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+                <span class="trade-chip">
+                  {{ icons.icon(w.category.slug, size=14) }} {{ w.category.name }}
+                </span>
+                <span class="estate-chip">
+                  {{ icons.icon('map-pin', size=13) }} {{ w.estate }}, Nairobi
+                </span>
+              </div>
+              <p class="small text-muted mb-0">Identity checked by the FundiMtaani admin before this listing went live.</p>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-3">
+
+        <!-- Stats Metric Bar -->
+        <div class="d-flex flex-wrap gap-4 small text-muted">
+          <div class="d-flex align-items-center gap-1">
+            {% if w.avg_rating %}
+              <div class="rating-stars-gold">
+                {% for i in range(1, 6) %}
+                  {% if i <= w.avg_rating|round|int %}
+                    {{ icons.icon('star-fill', size=14) }}
+                  {% else %}
+                    {{ icons.icon('star-empty', size=14) }}
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <strong class="text-dark">{{ "%.1f"|format(w.avg_rating) }}</strong>
+              <span>({{ w.review_count }} review{{ 's' if w.review_count != 1 else '' }})</span>
+            {% else %}
+              <span>{{ icons.icon('star-empty', size=14) }} No reviews yet</span>
+            {% endif %}
+          </div>
+
+          <div>
+            {{ icons.icon('clock', size=14) }}
+            <span><strong>{{ w.experience or 'Experienced' }}</strong> in trade</span>
+          </div>
+
+          <div>
+            {{ icons.icon('calendar', size=14) }}
+            <span>Listed {{ w.created_at.strftime('%b %Y') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- About & Pricing Card -->
+      <div class="card border-0 shadow-sm p-4 mb-4 rounded-4 bg-white">
+        <h5 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+          {{ icons.icon('briefcase', size=18) }} Trade Bio &amp; Service Rates
+        </h5>
+
+        {% if w.rate %}
+        <div class="p-3 rounded-3 mb-3 bg-light border d-flex align-items-center justify-content-between">
+          <div>
+            <span class="small text-muted d-block">Indicative Visit / Starting Rate:</span>
+            <strong class="h5 mb-0 text-dark">{{ w.rate }}</strong>
+          </div>
+          <span class="badge bg-white text-dark border px-2 py-1 small">Negotiable on scope</span>
+        </div>
+        {% endif %}
+
+        <p class="text-secondary mb-0" style="white-space: pre-line;">{{ w.bio }}</p>
+      </div>
+
+      <!-- Interactive WhatsApp Quote Generator Widget -->
+      <div class="card border-0 shadow-sm p-4 mb-4 rounded-4 bg-white"
+           id="whatsappComposer"
+           data-phone-digits="{{ w.phone }}"
+           data-worker-name="{{ w.name }}"
+           data-worker-trade="{{ w.category.name }}"
+           data-worker-estate="{{ w.estate }}">
+
+        <h5 class="fw-bold text-dark mb-2 d-flex align-items-center gap-2">
+          {{ icons.icon('whatsapp', size=20, class="text-success") }} Fast WhatsApp Inquiries
+        </h5>
+        <p class="small text-muted mb-3">Choose a pre-written message template or customize your inquiry before opening WhatsApp:</p>
+
+        <div class="row g-2 mb-3">
+          <div class="col-sm-6">
+            <button type="button" class="wa-template-btn active" data-template="general">
+              General Service Request
+            </button>
+          </div>
+          <div class="col-sm-6">
+            <button type="button" class="wa-template-btn" data-template="urgent">
+              Urgent Callout
+            </button>
+          </div>
+          <div class="col-sm-6">
+            <button type="button" class="wa-template-btn" data-template="quote">
+              Price Estimate &amp; Quote
+            </button>
+          </div>
+          <div class="col-sm-6">
+            <button type="button" class="wa-template-btn" data-template="weekend">
+              Schedule for Weekend
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-muted">Message Preview</label>
+          <textarea id="composerCustomText" class="form-control" rows="3">Hello {{ w.name }}, I found your listing on FundiMtaani regarding {{ w.category.name.lower() }} service in {{ w.estate }}.</textarea>
+        </div>
+
+        <a id="composerWaLink" href="{{ w.whatsapp_link() }}" target="_blank" rel="noopener" class="btn btn-whatsapp-solid w-100 fw-bold">
+          {{ icons.icon('whatsapp', size=18) }} Open WhatsApp with this Message &rarr;
+        </a>
+      </div>
+
+      <!-- Reviews & Rating Distribution Section -->
+      <div class="card border-0 shadow-sm p-4 mb-4 rounded-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+            {{ icons.icon('star-fill', size=18, class="text-warning") }} Customer Reviews ({{ w.review_count }})
+          </h5>
+          {% if reviewable_booking %}
+          <a class="btn btn-brand-outline btn-sm" href="{{ url_for('my_bookings') }}">
+            {{ icons.icon('edit-3', size=14) }} Write a Review
+          </a>
+          {% endif %}
+        </div>
+
+        <p class="small text-muted">Every review here comes from a customer whose booking with {{ w.name.split()[0] }} was completed. Reviews can only be written on a completed booking, one per booking.</p>
+
+        <!-- Rating Distribution Bars -->
+        {% if w.review_count > 0 %}
+        <div class="bg-light p-3 rounded-3 mb-4 border">
+          <div class="row align-items-center">
+            <div class="col-md-4 text-center border-end-md">
+              <div class="display-5 fw-bold text-dark">{{ "%.1f"|format(w.avg_rating) }}</div>
+              <div class="rating-stars-gold mb-1">
+                {% for i in range(1, 6) %}
+                  {% if i <= w.avg_rating|round|int %}
+                    {{ icons.icon('star-fill', size=16) }}
+                  {% else %}
+                    {{ icons.icon('star-empty', size=16) }}
+                  {% endif %}
+                {% endfor %}
+              </div>
+              <span class="small text-muted">Based on {{ w.review_count }} review{{ 's' if w.review_count != 1 else '' }}</span>
+            </div>
+
+            <div class="col-md-8 ps-md-4 mt-3 mt-md-0">
+              {% for star_val in [5, 4, 3, 2, 1] %}
+              <div class="rating-bar-container">
+                <span style="width: 50px;">{{ star_val }} star</span>
+                <div class="rating-progress-bg">
+                  <div class="rating-progress-fill" style="width: {{ breakdown.percentages[star_val] }}%;"></div>
+                </div>
+                <span class="text-muted" style="width: 30px; text-align: right;">{{ breakdown.counts[star_val] }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Reviews List -->
+        {% if reviews %}
+          {% for r in reviews %}
+          <div class="{% if not loop.last %}border-bottom pb-3 mb-3{% endif %}">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <div>
+                <strong class="text-dark">{{ r.customer.full_name if r.customer else 'Customer' }}</strong>
+                <span class="badge bg-light text-muted border ms-2 small">Completed Booking</span>
+              </div>
+              <div class="rating-stars-gold">
+                {% for i in range(1, 6) %}
+                  {% if i <= r.rating %}
+                    {{ icons.icon('star-fill', size=13) }}
+                  {% else %}
+                    {{ icons.icon('star-empty', size=13) }}
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+            {% if r.comment %}
+            <p class="small text-secondary mb-1">{{ r.comment }}</p>
+            {% endif %}
+            <span class="small text-muted">{{ icons.icon('calendar', size=12) }} {{ r.created_at.strftime('%d %b %Y') }}</span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center py-4 text-muted">
+            <p class="mb-1">No reviews published yet for this listing.</p>
+            <p class="small mb-0">Have you hired {{ w.name.split()[0] }} before? Book them and review once the job is complete.</p>
+          </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+
+    <!-- Right Column: Direct Contact & Booking Form -->
+    <div class="col-lg-4">
+      <div class="sticky-top" style="top: 85px; z-index: 10;">
+
+        <!-- Direct Quick Call Card -->
+        <div class="quick-contact-box mb-4">
+          <span class="badge bg-warning text-dark fw-bold mb-2">Direct Contact</span>
+          <h3 class="h5 fw-bold mb-3">Hire {{ w.name.split()[0] }} Directly</h3>
+
+          <a href="tel:{{ w.phone }}" class="btn-direct-call w-100 mb-2">
+            {{ icons.icon('phone', size=18) }} Call {{ w.phone }}
+          </a>
+
+          <a href="{{ w.whatsapp_link() }}" target="_blank" rel="noopener" class="btn btn-whatsapp-solid w-100 fw-bold mb-3 py-2">
+            {{ icons.icon('whatsapp', size=18) }} WhatsApp Now
+          </a>
+
+          <p class="small text-white-50 mb-0">
+            {{ icons.icon('shield-check', size=14) }} Always request a written or itemized quote before work commences.
+          </p>
+        </div>
+
+        <!-- Safety & Payment Advisory Notice -->
+        <div class="card-safety-red mb-3">
+          <div class="d-flex align-items-start gap-2">
+            {{ icons.icon('shield-check', size=20, class="text-danger flex-shrink-0 mt-1") }}
+            <div class="small">
+              <span class="safety-red-title mb-1">
+                Important Safety &amp; Payment Rule
+              </span>
+              <p class="mb-1 text-dark" style="font-size: 0.82rem; line-height: 1.4;">
+                FundiMtaani solely connects residents with local artisans and bears <strong>no liability</strong> for private agreements or service outcomes. Pay the fundi directly once the work is done.
+              </p>
+              <div class="text-dark fw-semibold" style="font-size: 0.8rem; line-height: 1.4;">
+                &bull; <strong>Never send money</strong> before meeting in person.<br>
+                &bull; <strong>Never pay for unseen materials</strong> — verify supplies on-site first.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking Form Card -->
+        <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+          <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+            {{ icons.icon('calendar', size=18) }} Book {{ w.name.split()[0] }}
+          </h5>
+          <p class="small text-muted mb-3">Book this fundi for your job. They accept or decline, and you are notified by email.</p>
+
+          {% if not current_user %}
+          <div class="alert alert-info small mb-3">
+            You need an account to book a fundi. Your booking is tied to your account, so the fundi knows who you are.
+          </div>
+          <a href="{{ url_for('login', next=request.path) }}" class="btn btn-brand-primary w-100 fw-bold mb-2">Log in to Book</a>
+          <a href="{{ url_for('register') }}" class="btn btn-brand-outline w-100">Create a Free Account</a>
+          {% elif not current_user.is_email_verified %}
+          <div class="alert alert-warning small mb-3">
+            Verify your email first — check your inbox for the 6-digit code.
+          </div>
+          <a href="{{ url_for('verify', email=current_user.email) }}" class="btn btn-brand-primary w-100 fw-bold">Verify My Email</a>
+          {% else %}
+          <form method="post" action="{{ url_for('book_worker', worker_id=w.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="website" value="">
+
+            <div class="mb-2">
+              <label class="form-label small fw-bold text-muted mb-1">Booking As</label>
+              <div class="form-control form-control-sm bg-light">{{ current_user.full_name }} &middot; {{ current_user.phone }}</div>
+              <div class="form-text">Taken from your account — bookings are always tied to the customer who made them.</div>
+            </div>
+
+            <div class="mb-2">
+              <label class="form-label small fw-bold text-muted mb-1">Estate (Where the Job Is) *</label>
+              <select name="estate" class="form-select form-select-sm" required>
+                <option value="">Select estate...</option>
+                {% for e in estates %}
+                <option value="{{ e }}" {% if e == w.estate %}selected{% endif %}>{{ e }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-bold text-muted mb-1">Preferred Date</label>
+                <input name="preferred_date" class="form-control form-control-sm" placeholder="e.g. Tomorrow / 28 Nov" maxlength="40">
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold text-muted mb-1">Time Slot</label>
+                <select name="preferred_slot" class="form-select form-select-sm">
+                  <option value="Morning (8:00 AM - 12:00 PM)">Morning (8am - 12pm)</option>
+                  <option value="Afternoon (12:00 PM - 4:00 PM)">Afternoon (12pm - 4pm)</option>
+                  <option value="Evening (4:00 PM - 7:00 PM)">Evening (4pm - 7pm)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-muted mb-1">Job Description</label>
+              <textarea name="message" class="form-control form-control-sm" rows="3" placeholder="Briefly describe what needs to be fixed..." maxlength="1000"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-brand-primary w-100 fw-bold">
+              Book {{ w.name.split()[0] }} &rarr;
+            </button>
+          </form>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

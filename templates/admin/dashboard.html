@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}Admin Dashboard — FundiMtaani{% endblock %}
+
+{% block content %}
+
+<section class="container py-4">
+
+  <!-- Header & Actions -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2 border-bottom pb-3">
+    <div>
+      <div class="d-flex align-items-center gap-2">
+        <h1 class="h4 fw-bold mb-0 text-dark">Management Console</h1>
+        <span class="badge bg-light text-dark border small">{{ counts.approved }} Live Fundis</span>
+      </div>
+      <p class="small text-muted mb-0">Review fundi applications, manage customers and categories, and moderate reviews</p>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('admin_customers') }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1">
+        {{ icons.icon('users', size=14) }} Customers
+      </a>
+      <a href="{{ url_for('admin_categories') }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1">
+        {{ icons.icon('briefcase', size=14) }} Categories
+      </a>
+      <a href="{{ url_for('admin_reports') }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1">
+        {{ icons.icon('calculator', size=14) }} Reports
+      </a>
+      <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-danger d-flex align-items-center gap-1">
+        {{ icons.icon('log-out', size=14) }} Logout
+      </a>
+    </div>
+  </div>
+
+  <!-- Metric Overview Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+      <div class="admin-metric-card">
+        <div class="admin-metric-icon primary">
+          {{ icons.icon('shield-check', size=24) }}
+        </div>
+        <div>
+          <div class="admin-metric-number">{{ counts.approved }}</div>
+          <div class="admin-metric-label">Live Fundis</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+      <div class="admin-metric-card">
+        <div class="admin-metric-icon accent">
+          {{ icons.icon('user-plus', size=24) }}
+        </div>
+        <div>
+          <div class="admin-metric-number">{{ counts.pending }}</div>
+          <div class="admin-metric-label">Pending Applications</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+      <div class="admin-metric-card">
+        <div class="admin-metric-icon info">
+          {{ icons.icon('calendar', size=24) }}
+        </div>
+        <div>
+          <div class="admin-metric-number">{{ counts.bookings_total }}</div>
+          <div class="admin-metric-label">Total Bookings ({{ counts.bookings_pending }} Pending)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+      <div class="admin-metric-card">
+        <div class="admin-metric-icon success">
+          {{ icons.icon('star-fill', size=24) }}
+        </div>
+        <div>
+          <div class="admin-metric-number">{{ counts.reviews_total }}</div>
+          <div class="admin-metric-label">Customer Reviews</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Table Search Input -->
+  <div class="card border-0 shadow-sm p-3 mb-4 bg-white rounded-3">
+    <div class="row align-items-center g-2">
+      <div class="col-md-6">
+        <div class="d-flex align-items-center rounded-3 px-3 py-1 border" style="height: 44px; background-color: var(--surface-subtle); border-color: var(--border-subtle) !important;">
+          <span class="d-inline-flex align-items-center justify-content-center me-2" style="color: var(--brand-primary); flex-shrink: 0; min-width: 18px;">
+            {{ icons.icon('search', size=16) }}
+          </span>
+          <input type="text" id="adminLiveSearch" class="form-control border-0 bg-transparent shadow-none p-0 ps-1" style="color: var(--ink-heading); font-size: 0.92rem; height: 100%; outline: none;" placeholder="Filter visible table rows by name, phone, estate, or keyword...">
+        </div>
+      </div>
+      <div class="col-md-6 text-md-end text-muted small">
+        Search filters automatically across all active tabs
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <ul class="nav custom-nav-tabs mb-4" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pendingTab">
+        Pending Applications ({{ pending|length }})
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="pill" data-bs-target="#liveFundisTab">
+        Live Directory ({{ approved_workers|length }})
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="pill" data-bs-target="#bookingsTab">
+        Bookings ({{ bookings|length }})
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="pill" data-bs-target="#reviewsTab">
+        Reviews ({{ reviews|length }})
+      </button>
+    </li>
+  </ul>
+
+  <!-- Tab Contents -->
+  <div class="tab-content">
+
+    <!-- Tab 1: Pending Applications (with the ID check) -->
+    <div class="tab-pane fade show active" id="pendingTab">
+      {% if pending %}
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="min-width: 180px;">Applicant</th>
+                <th style="min-width: 160px;">Trade &amp; Estate</th>
+                <th style="min-width: 160px;">Photo &amp; ID Check</th>
+                <th style="min-width: 260px;">Experience &amp; Bio</th>
+                <th class="text-end" style="min-width: 200px;">Decision</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for w in pending %}
+              <tr class="admin-filterable-row">
+                <td style="min-width: 180px;">
+                  <strong class="text-dark d-block">{{ w.name }}</strong>
+                  <span class="small text-muted d-block">{{ w.owner.email if w.owner else 'No account email' }}</span>
+                  <span class="small text-muted">{{ icons.icon('calendar', size=12) }} Applied {{ w.created_at.strftime('%d %b %Y') }}</span>
+                </td>
+                <td style="min-width: 160px;">
+                  <span class="trade-chip mb-1">{{ icons.icon(w.category.slug, size=12) }} {{ w.category.name }}</span>
+                  <div class="small text-muted mt-1">{{ icons.icon('map-pin', size=12) }} {{ w.estate }}</div>
+                  <div class="small text-muted mt-1">{{ icons.icon('phone', size=12) }} {{ w.phone }}</div>
+                </td>
+                <td style="min-width: 160px;">
+                  {% if w.photo_filename %}
+                  <a href="{{ url_for('uploaded_file', filename=w.photo_filename) }}" target="_blank">
+                    <img src="{{ url_for('uploaded_file', filename=w.photo_filename) }}" alt="Profile photo of {{ w.name }}" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px;">
+                  </a>
+                  {% else %}
+                  <span class="small text-muted">No photo uploaded</span>
+                  {% endif %}
+                  <div class="small mt-1">
+                    <strong>ID:</strong> {{ w.national_id or 'Not given' }}
+                    {% if w.id_document_filename %}
+                    <br><a href="{{ url_for('uploaded_file', filename=w.id_document_filename) }}" target="_blank">View ID document</a>
+                    {% else %}
+                    <br><span class="text-muted">No ID document uploaded</span>
+                    {% endif %}
+                  </div>
+                </td>
+                <td class="small admin-td-wrap" style="min-width: 260px; max-width: 320px;">
+                  <strong class="d-block text-dark">{{ w.rate or 'Standard rate' }} &middot; {{ w.experience }}</strong>
+                  <div class="admin-scope-card mt-1">{{ w.bio }}</div>
+                </td>
+                <td class="text-end" style="min-width: 200px;">
+                  <form method="post" action="{{ url_for('admin_worker_approve', worker_id=w.id) }}" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-sm btn-success px-3 fw-bold">
+                      {{ icons.icon('check-circle', size=13) }} Approve
+                    </button>
+                  </form>
+                  <form method="post" action="{{ url_for('admin_worker_reject', worker_id=w.id) }}" class="mt-2">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="input-group input-group-sm">
+                      <input type="text" name="reason" class="form-control" placeholder="Rejection reason (required)" required maxlength="1000">
+                      <button class="btn btn-outline-danger">Reject</button>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% else %}
+      <div class="card border-0 shadow-sm p-4 text-center text-muted bg-white rounded-3">
+        <p class="mb-0">All applications have been reviewed. No pending queue.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Tab 2: Live Approved Fundis -->
+    <div class="tab-pane fade" id="liveFundisTab">
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="min-width: 180px;">Fundi Name</th>
+                <th style="min-width: 160px;">Trade</th>
+                <th style="min-width: 140px;">Estate</th>
+                <th style="min-width: 160px;">Contact</th>
+                <th style="min-width: 140px;">Rating</th>
+                <th style="min-width: 140px;">Account</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for w in approved_workers %}
+              <tr class="admin-filterable-row">
+                <td style="min-width: 180px;">
+                  <a href="{{ url_for('worker_detail', worker_id=w.id) }}" target="_blank" class="fw-bold text-dark text-decoration-none">
+                    {{ w.name }} {{ icons.icon('shield-check', size=13, class="text-primary") }}
+                  </a>
+                </td>
+                <td style="min-width: 160px;">
+                  <span class="trade-chip">{{ icons.icon(w.category.slug, size=12) }} {{ w.category.name }}</span>
+                </td>
+                <td style="min-width: 140px;">
+                  <span class="small text-muted">{{ icons.icon('map-pin', size=11) }} {{ w.estate }}</span>
+                </td>
+                <td style="min-width: 160px;">
+                  <a href="tel:{{ w.phone }}" class="text-dark fw-semibold text-decoration-none small">{{ w.phone }}</a>
+                  <a href="{{ w.whatsapp_link() }}" target="_blank" rel="noopener" class="text-success small" title="WhatsApp Fundi">
+                    {{ icons.icon('whatsapp', size=13) }}
+                  </a>
+                </td>
+                <td style="min-width: 140px;">
+                  <div class="small">
+                    <strong>{{ "%.1f"|format(w.avg_rating) if w.avg_rating else '—' }}</strong> ({{ w.review_count }} revs)
+                  </div>
+                </td>
+                <td style="min-width: 140px;">
+                  {% if w.owner %}
+                  <span class="small text-muted">{{ w.owner.email }}</span>
+                  {% if not w.owner.is_active %}
+                  <span class="badge bg-danger ms-1">Suspended</span>
+                  {% endif %}
+                  {% else %}
+                  <span class="small text-muted">No linked account</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Bookings (read-only — Admin does not drive bookings) -->
+    <div class="tab-pane fade" id="bookingsTab">
+      {% if bookings %}
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="min-width: 200px;">Customer</th>
+                <th style="min-width: 200px;">Fundi</th>
+                <th style="min-width: 180px;">Schedule</th>
+                <th style="min-width: 260px;">Job Description</th>
+                <th style="min-width: 130px;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for b in bookings %}
+              <tr class="admin-filterable-row">
+                <td style="min-width: 200px;">
+                  <span class="fw-bold text-dark d-block">{{ b.customer.full_name if b.customer else 'Unknown' }}</span>
+                  <span class="small text-muted d-block">{{ b.customer.email if b.customer else '' }}</span>
+                  <span class="small text-muted d-block">{{ b.customer.phone if b.customer else '' }}</span>
+                  <span class="badge bg-light text-muted border px-1 mt-1" style="font-size: 0.72rem;">#{{ b.id }}</span>
+                </td>
+                <td style="min-width: 200px;">
+                  {% if b.worker %}
+                  <a href="{{ url_for('worker_detail', worker_id=b.worker.id) }}" target="_blank" class="fw-bold text-dark text-decoration-none d-block">
+                    {{ b.worker.name }}
+                  </a>
+                  <span class="trade-chip mt-1 mb-1" style="font-size: 0.72rem;">
+                    {{ icons.icon(b.worker.category.slug, size=11) }} {{ b.worker.category.name }}
+                  </span>
+                  <div class="small text-muted">{{ icons.icon('map-pin', size=11) }} {{ b.worker.estate }}</div>
+                  {% else %}
+                  <span class="text-muted">Deleted Fundi</span>
+                  {% endif %}
+                </td>
+                <td style="min-width: 180px;">
+                  <span class="admin-schedule-chip">{{ icons.icon('clock', size=12) }} {{ b.preferred_date or 'Flexible Schedule' }}</span>
+                  {% if b.preferred_slot %}
+                  <div class="small text-muted mt-1">{{ b.preferred_slot }}</div>
+                  {% endif %}
+                  <div class="small text-muted mt-1">{{ icons.icon('calendar', size=11) }} {{ b.created_at.strftime('%d %b %Y, %H:%M') if b.created_at else 'Recent' }}</div>
+                </td>
+                <td class="admin-td-wrap" style="min-width: 260px; max-width: 320px;">
+                  <div class="admin-scope-card">
+                    {{ b.message or 'No description given' }}
+                  </div>
+                </td>
+                <td style="min-width: 130px;">
+                  <span class="badge
+                    {% if b.status == 'pending' %}bg-warning text-dark
+                    {% elif b.status == 'accepted' %}bg-primary
+                    {% elif b.status == 'declined' %}bg-secondary
+                    {% elif b.status == 'job_done' %}bg-info text-dark
+                    {% elif b.status == 'completed' %}bg-success
+                    {% endif %}">{{ b.status_label }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% else %}
+      <div class="card border-0 shadow-sm p-4 text-center text-muted bg-white rounded-3">
+        <p class="mb-0">No bookings logged yet.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Tab 4: Reviews Moderation -->
+    <div class="tab-pane fade" id="reviewsTab">
+      {% if reviews %}
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="min-width: 170px;">Reviewer</th>
+                <th style="min-width: 190px;">Target Fundi</th>
+                <th style="min-width: 130px;">Rating</th>
+                <th style="min-width: 260px;">Feedback Comment</th>
+                <th style="min-width: 120px;">Date</th>
+                <th class="text-end" style="min-width: 110px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in reviews %}
+              <tr class="admin-filterable-row">
+                <td style="min-width: 170px;">
+                  <strong class="text-dark d-block">{{ r.customer.full_name if r.customer else 'Unknown' }}</strong>
+                  <span class="badge bg-light text-muted border small mt-1">Completed Booking #{{ r.booking_id }}</span>
+                </td>
+                <td style="min-width: 190px;">
+                  {% if r.worker %}
+                  <a href="{{ url_for('worker_detail', worker_id=r.worker.id) }}" target="_blank" class="text-dark fw-semibold text-decoration-none d-block">
+                    {{ r.worker.name }}
+                  </a>
+                  <div class="small text-muted">{{ r.worker.category.name if r.worker.category else '' }} &middot; {{ r.worker.estate }}</div>
+                  {% else %}
+                  <span class="text-muted">Deleted Fundi</span>
+                  {% endif %}
+                </td>
+                <td style="min-width: 130px;">
+                  <div class="rating-stars-gold small">
+                    {% for i in range(1, 6) %}
+                      {% if i <= r.rating %}
+                        {{ icons.icon('star-fill', size=13) }}
+                      {% else %}
+                        {{ icons.icon('star-empty', size=13) }}
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <span class="small text-muted">{{ r.rating }} / 5</span>
+                </td>
+                <td class="admin-td-wrap" style="min-width: 260px; max-width: 320px;">
+                  <div class="admin-scope-card">
+                    {{ r.comment or 'No written feedback comments' }}
+                  </div>
+                </td>
+                <td class="small text-muted" style="min-width: 120px;">{{ r.created_at.strftime('%d %b %Y') }}</td>
+                <td class="text-end" style="min-width: 110px;">
+                  <form method="post" action="{{ url_for('admin_review_delete', review_id=r.id) }}" class="d-inline" onsubmit="return confirm('Delete this review? The fundi rating will be recalculated.');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-sm btn-outline-danger px-2 py-1" title="Delete Review">
+                      {{ icons.icon('trash', size=13) }} Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% else %}
+      <div class="card border-0 shadow-sm p-4 text-center text-muted bg-white rounded-3">
+        <p class="mb-0">No customer reviews published yet.</p>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}

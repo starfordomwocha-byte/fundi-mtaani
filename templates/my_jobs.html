@@ -1,0 +1,105 @@
+{# My Jobs: the fundi's own bookings, with Accept, Decline and Mark Job Done. Only the fundi who owns the booking sees it. #}
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}My Jobs — FundiMtaani{% endblock %}
+
+{% block content %}
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+
+      <div class="mb-4">
+        <h1 class="h3 fw-bold text-dark mb-1">My Jobs</h1>
+        <p class="text-muted mb-0">
+          Bookings for your fundi profile: <strong>{{ worker.name }}</strong> — {{ worker.category.name }}, {{ worker.estate }}
+          {% if worker.status == 'pending' %}
+          <span class="badge bg-warning text-dark ms-1">Application Pending</span>
+          {% elif worker.status == 'rejected' %}
+          <span class="badge bg-danger ms-1">Application Rejected</span>
+          {% endif %}
+        </p>
+        {% if worker.status != 'approved' %}
+        <div class="alert alert-warning small mt-3">
+          Your profile is not live yet, so customers cannot book you. Once Admin approves your application, new bookings will appear here.
+        </div>
+        {% endif %}
+      </div>
+
+      {% if bookings %}
+      {% for b in bookings %}
+      <div class="card border-0 shadow-sm p-4 mb-3 rounded-4 bg-white">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <strong class="text-dark">{{ b.customer.full_name }}</strong>
+              <span class="badge bg-light text-muted border">#{{ b.id }}</span>
+            </div>
+            <p class="small text-muted mb-1">
+              {{ icons.icon('phone', size=12) }} {{ b.customer.phone }} &middot;
+              {{ icons.icon('map-pin', size=12) }} {{ b.estate }} &middot;
+              {{ icons.icon('calendar', size=12) }} {{ b.preferred_date or 'Flexible date' }} ({{ b.preferred_slot }}) &middot;
+              Booked {{ b.created_at.strftime('%d %b %Y') }}
+            </p>
+            {% if b.message %}
+            <p class="small text-secondary mb-0">{{ b.message }}</p>
+            {% endif %}
+          </div>
+
+          <div class="text-end">
+            {% if b.status == 'pending' %}
+            <span class="badge bg-warning text-dark">Pending</span>
+            {% elif b.status == 'accepted' %}
+            <span class="badge bg-primary">Accepted</span>
+            {% elif b.status == 'declined' %}
+            <span class="badge bg-secondary">Declined</span>
+            {% elif b.status == 'job_done' %}
+            <span class="badge bg-info text-dark">Job Done — Waiting for Customer</span>
+            {% elif b.status == 'completed' %}
+            <span class="badge bg-success">Completed</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <a href="tel:{{ b.customer.phone }}" class="btn btn-sm btn-outline-secondary">
+            {{ icons.icon('phone', size=14) }} Call Customer
+          </a>
+          <a href="https://wa.me/254{{ b.customer.phone.replace(' ', '').lstrip('0') }}" target="_blank" rel="noopener" class="btn btn-sm btn-whatsapp-solid">
+            {{ icons.icon('whatsapp', size=14) }} WhatsApp Customer
+          </a>
+
+          {% if b.status == 'pending' %}
+          <form method="post" action="{{ url_for('accept_booking', booking_id=b.id) }}" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-sm btn-success fw-bold">Accept Booking</button>
+          </form>
+          <form method="post" action="{{ url_for('decline_booking', booking_id=b.id) }}" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-sm btn-outline-danger">Decline</button>
+          </form>
+          {% elif b.status == 'accepted' %}
+          <form method="post" action="{{ url_for('mark_job_done', booking_id=b.id) }}" class="d-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-sm btn-success fw-bold">Mark Job Done</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="card border-0 shadow-sm p-5 text-center bg-white rounded-4">
+        <div class="category-icon-wrapper mx-auto mb-3" style="width: 64px; height: 64px;">
+          {{ icons.icon('briefcase', size=32) }}
+        </div>
+        <h4 class="fw-bold mb-2">No Jobs Yet</h4>
+        <p class="text-muted mb-0">When a customer books you, the booking appears here for you to accept or decline.</p>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

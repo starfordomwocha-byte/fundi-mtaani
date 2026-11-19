@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-wrapper">
+  <div class="container">
+    <div class="text-center max-w-700 mx-auto mb-4">
+      <div class="hero-pill">
+        {{ icons.icon('shield-check', size=15) }} Nairobi Verified Trade Network
+      </div>
+      <h1 class="hero-title mb-3">
+        Find Trusted Local Fundis<br>In Your Estate
+      </h1>
+      <p class="hero-subtitle">
+        Connect directly with verified plumbers, electricians, carpenters, and technicians. Real reviews from completed bookings, transparent rates, and zero middlemen — you pay the fundi directly.
+      </p>
+    </div>
+
+    <!-- Search Control Panel -->
+    <form action="{{ url_for('fundis') }}" method="get" class="search-control-panel mb-3">
+      <div class="row g-2">
+        <div class="col-md-4">
+          <div class="search-field-wrapper">
+            <span class="search-field-icon">{{ icons.icon('briefcase', size=18) }}</span>
+            <select name="category" class="search-select-clean" aria-label="Select Trade Category">
+              <option value="">What service do you need?</option>
+              {% for c in all_categories %}
+              <option value="{{ c.slug }}">{{ c.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="search-field-wrapper">
+            <span class="search-field-icon">{{ icons.icon('map-pin', size=18) }}</span>
+            <select name="estate" class="search-select-clean" aria-label="Select Estate Location">
+              <option value="">Which estate / area?</option>
+              {% for e in estates %}
+              <option value="{{ e }}">{{ e }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-brand-primary w-100 h-100 py-2">
+            {{ icons.icon('search', size=18) }} Find a Fundi
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Quick Search Badges Strip -->
+    <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 max-w-700 mx-auto small text-muted">
+      <span class="fw-bold text-dark">Popular:</span>
+      <a href="{{ url_for('fundis', category='plumbing', estate='Langata') }}" class="badge bg-light text-dark border px-2 py-1">Plumber in Langata</a>
+      <a href="{{ url_for('fundis', category='cleaning', estate='Langata') }}" class="badge bg-light text-dark border px-2 py-1">Cleaner in Langata</a>
+      <a href="{{ url_for('fundis', category='electrical', estate='Nairobi West') }}" class="badge bg-light text-dark border px-2 py-1">Electrician in Nairobi West</a>
+      <a href="{{ url_for('fundis', category='carpentry', estate='Madaraka') }}" class="badge bg-light text-dark border px-2 py-1">Carpenter in Madaraka</a>
+      <a href="{{ url_for('fundis', category='masonry', estate='Madaraka') }}" class="badge bg-light text-dark border px-2 py-1">Mason in Madaraka</a>
+    </div>
+
+    <!-- Metrics Strip -->
+    <div class="stats-strip">
+      <div class="stat-item">
+        {{ icons.icon('shield-check', size=18, class="text-success") }}
+        <span><strong>{{ stats.workers }}</strong> Verified Fundis</span>
+      </div>
+      <div class="stat-item">
+        {{ icons.icon('star-fill', size=18, class="text-warning") }}
+        <span><strong>{{ stats.reviews }}</strong> Real Reviews</span>
+      </div>
+      <div class="stat-item">
+        {{ icons.icon('map-pin', size=18, class="text-primary") }}
+        <span><strong>{{ stats.estates_count }}</strong> Nairobi Estates</span>
+      </div>
+      <div class="stat-item">
+        {{ icons.icon('briefcase', size=18, class="text-dark") }}
+        <span><strong>{{ stats.categories }}</strong> Skilled Trades</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Browse Trades Categories Grid -->
+<section class="container py-5">
+  <div class="d-flex justify-content-between align-items-end mb-4">
+    <div>
+      <h2 class="h3 fw-bold mb-1">Browse by Trade</h2>
+      <p class="text-muted mb-0">Select a specialized trade category to view approved fundis near you</p>
+    </div>
+    <a href="{{ url_for('fundis') }}" class="btn btn-brand-outline btn-sm">
+      View All Trades {{ icons.icon('arrow-right', size=14) }}
+    </a>
+  </div>
+
+  <div class="row g-3">
+    {% for c in all_categories %}
+    <div class="col-6 col-md-4 col-lg-3">
+      <a href="{{ url_for('fundis', category=c.slug) }}" class="category-box">
+        <div class="category-icon-wrapper">
+          {{ icons.icon(c.slug, size=24) }}
+        </div>
+        <span class="category-name">{{ c.name }}</span>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Newest Fundis Section -->
+{% if recent %}
+<section class="bg-white py-5 border-top border-bottom">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="h3 fw-bold mb-0">Newest Fundis</h2>
+        <p class="text-muted mb-0">Recently approved fundis in Langata, Madaraka and Nairobi West</p>
+      </div>
+      <a href="{{ url_for('fundis') }}" class="btn btn-brand-outline btn-sm">
+        Explore Directory {{ icons.icon('arrow-right', size=14) }}
+      </a>
+    </div>
+
+    <div class="row g-3">
+      {% for w in recent %}
+      {% include "_worker_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- How It Works Section -->
+<section class="bg-white py-5 border-top">
+  <div class="container">
+    <div class="text-center max-w-700 mx-auto mb-5">
+      <h2 class="h3 fw-bold mb-2">How FundiMtaani Works</h2>
+      <p class="text-muted">From finding a fundi to leaving a review — the whole flow, in seven steps</p>
+    </div>
+
+    <div class="row g-4 text-center">
+      <div class="col-md-4">
+        <div class="p-4 rounded-3 border h-100 bg-light">
+          <div class="category-icon-wrapper mx-auto mb-3" style="width: 56px; height: 56px;">
+            {{ icons.icon('user-plus', size=28) }}
+          </div>
+          <h5 class="fw-bold mb-2">1. Register &amp; Verify Your Email</h5>
+          <p class="small text-muted mb-0">
+            Create a free account with your name, email and phone. Enter the 6-digit code we email you to activate it.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-4 rounded-3 border h-100 bg-light">
+          <div class="category-icon-wrapper mx-auto mb-3" style="width: 56px; height: 56px;">
+            {{ icons.icon('map-pin', size=28) }}
+          </div>
+          <h5 class="fw-bold mb-2">2. Find a Fundi</h5>
+          <p class="small text-muted mb-0">
+            Filter by trade, estate and rating to find approved fundis near you, then read their reviews and rates.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-4 rounded-3 border h-100 bg-light">
+          <div class="category-icon-wrapper mx-auto mb-3" style="width: 56px; height: 56px;">
+            {{ icons.icon('calendar', size=28) }}
+          </div>
+          <h5 class="fw-bold mb-2">3. Book the Fundi</h5>
+          <p class="small text-muted mb-0">
+            Book your chosen fundi from their profile. They accept or decline the booking, and you are notified either way.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-4 rounded-3 border h-100 bg-light">
+          <div class="category-icon-wrapper mx-auto mb-3" style="width: 56px; height: 56px;">
+            {{ icons.icon('briefcase', size=28) }}
+          </div>
+          <h5 class="fw-bold mb-2">4. Job Done</h5>
+          <p class="small text-muted mb-0">
+            The fundi does the work and marks the job done when it is finished.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-4 rounded-3 border h-100 bg-light">
+          <div class="category-icon-wrapper mx-auto mb-3" style="width: 56px; height: 56px;">
+            {{ icons.icon('check-circle', size=28) }}
+          </div>
+          <h5 class="fw-bold mb-2">5. Confirm &amp; Pay Directly</h5>
+          <p class="small text-muted mb-0">
+            Confirm the job is complete, then pay the fundi directly — FundiMtaani takes no commission and no fee.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-4 rounded-3 border h-100 bg-light">
+          <div class="category-icon-wrapper mx-auto mb-3" style="width: 56px; height: 56px;">
+            {{ icons.icon('star-fill', size=28) }}
+          </div>
+          <h5 class="fw-bold mb-2">6. Review the Fundi</h5>
+          <p class="small text-muted mb-0">
+            Leave a review on your completed booking, so the next neighbour can hire with confidence.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Safety & Anti-Fraud Advisory Banner -->
+    <div class="mt-4 p-3 p-md-4 rounded-4 text-start" style="background-color: var(--surface-subtle); border: 1px solid var(--border-subtle);">
+      <div class="d-flex align-items-start gap-3">
+        <div class="category-icon-wrapper flex-shrink-0 text-warning bg-warning-subtle" style="width: 40px; height: 40px;">
+          {{ icons.icon('shield-check', size=20) }}
+        </div>
+        <div>
+          <h6 class="fw-bold text-dark mb-1">Community Safety Advisory: Connecting Neighbours Safely</h6>
+          <p class="small text-secondary mb-1">
+            FundiMtaani is strictly an independent directory to connect residents with local artisans. We are not liable for private contracts, transactions, or work outcomes.
+          </p>
+          <div class="small fw-semibold text-dark">
+            &bull; <strong>Never send money before meeting</strong> in person. &nbsp;|&nbsp;
+            &bull; <strong>Never pay for unseen materials.</strong> &nbsp;|&nbsp;
+            &bull; <strong>Inspect and test completed work</strong> before final payment.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Tradesmen / Fundis Banner -->
+    <div class="mt-5 p-4 p-md-5 rounded-4 text-white d-flex flex-wrap align-items-center justify-content-between gap-3" style="background-color: var(--brand-primary);">
+      <div>
+        <span class="badge bg-warning text-dark fw-bold mb-2">Zero Commission</span>
+        <h3 class="fw-bold text-white mb-1">Are you a skilled fundi in Nairobi?</h3>
+        <p class="mb-0 text-white-50">List your profile today for free and receive direct bookings from customers in your estate. You keep 100% of what you earn.</p>
+      </div>
+      <div>
+        <a href="{{ url_for('join') }}" class="btn btn-brand-accent btn-lg px-4 fw-bold">
+          {{ icons.icon('user-plus', size=18) }} List Your Trade Free
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{# Customer registration page: full name, email, phone and password. All four are required. #}
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}Create an Account — FundiMtaani{% endblock %}
+
+{% block content %}
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+        <div class="text-center mb-4">
+          <div class="category-icon-wrapper mx-auto mb-2">
+            {{ icons.icon('user-plus', size=22) }}
+          </div>
+          <h1 class="h5 fw-bold text-dark mb-1">Create Your Account</h1>
+          <p class="small text-muted mb-0">Free. You need an account to book a fundi or apply as one.</p>
+        </div>
+
+        <form method="post" action="{{ url_for('register') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="website" value="">
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Full Name *</label>
+            <input type="text" name="full_name" class="form-control" value="{{ form.full_name }}" placeholder="e.g. Sarah Wanjiku" required maxlength="120" autofocus>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Email Address *</label>
+            <input type="email" name="email" class="form-control" value="{{ form.email }}" placeholder="you@example.com" required maxlength="160">
+            <div class="form-text">We email a 6-digit code to this address to verify it. Your phone is never verified.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Phone Number *</label>
+            <input type="tel" name="phone" class="form-control" value="{{ form.phone }}" placeholder="0712 345 678" required maxlength="20">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Password *</label>
+            <input type="password" name="password" class="form-control" placeholder="At least 6 characters" required minlength="6">
+          </div>
+
+          <button type="submit" class="btn btn-brand-primary w-100 fw-bold py-2">
+            Create Account &rarr;
+          </button>
+        </form>
+
+        <p class="small text-muted text-center mt-3 mb-0">
+          Already have an account? <a href="{{ url_for('login') }}">Log in</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}List Your Trade Free — FundiMtaani Nairobi{% endblock %}
+
+{% block meta_description %}
+Join FundiMtaani as a fundi — free. Apply with your trade, estate, photo and ID. Admin reviews every application before it goes live.
+{% endblock %}
+
+{% block content %}
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      {% if worker %}
+      <!-- Your application already exists: show its status instead of a blank form -->
+      <div class="text-center mb-4">
+        <div class="hero-pill mb-2">
+          {{ icons.icon('shield-check', size=15) }} Your Fundi Application
+        </div>
+        <h1 class="h2 fw-bold text-dark mb-2">{{ worker.name }}</h1>
+        <p class="text-muted">{{ worker.category.name }} &middot; {{ worker.estate }} &middot; {{ worker.phone }}</p>
+      </div>
+
+      <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-white text-center">
+        {% if worker.status == 'pending' %}
+        <div class="category-icon-wrapper mx-auto mb-3" style="width: 64px; height: 64px;">
+          {{ icons.icon('clock', size=36) }}
+        </div>
+        <h2 class="h4 fw-bold text-dark mb-2">Application Pending</h2>
+        <p class="text-muted mb-4">
+          Your application is waiting for the admin to review it. Fundis are hidden from the directory until Admin approves them, after checking your ID.
+        </p>
+        {% elif worker.status == 'approved' %}
+        <div class="category-icon-wrapper mx-auto mb-3" style="width: 64px; height: 64px; background-color: var(--color-success-light); color: var(--color-success);">
+          {{ icons.icon('check-circle', size=36) }}
+        </div>
+        <h2 class="h4 fw-bold text-dark mb-2">Application Approved — You Are Live</h2>
+        <p class="text-muted mb-4">
+          Your profile is in the directory and customers can book you.
+        </p>
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+          <a href="{{ url_for('worker_detail', worker_id=worker.id) }}" class="btn btn-brand-primary">View My Public Profile</a>
+          <a href="{{ url_for('my_jobs') }}" class="btn btn-brand-outline">My Jobs</a>
+          <a href="{{ url_for('edit_fundi_profile') }}" class="btn btn-brand-outline">Edit My Profile</a>
+        </div>
+        {% elif worker.status == 'rejected' %}
+        <div class="category-icon-wrapper mx-auto mb-3" style="width: 64px; height: 64px; background-color: var(--color-danger-light, #fde8e8); color: var(--color-danger, #dc2626);">
+          {{ icons.icon('shield-check', size=36) }}
+        </div>
+        <h2 class="h4 fw-bold text-dark mb-2">Application Not Approved</h2>
+        <p class="text-muted mb-2">The admin gave this reason:</p>
+        <div class="bg-light p-3 rounded-3 text-start mb-4 border">
+          <p class="mb-0">{{ worker.rejection_reason or 'No reason given.' }}</p>
+        </div>
+        <p class="text-muted mb-4">Fix the problem above, then submit your application again using the form below.</p>
+        <form method="post" action="{{ url_for('join') }}" enctype="multipart/form-data" class="text-start">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="website" value="">
+          {% include "join_form_fields.html" %}
+          <button type="submit" name="action" value="submit" class="btn btn-brand-primary btn-lg w-100 fw-bold">
+            Submit My Application Again &rarr;
+          </button>
+        </form>
+        {% endif %}
+        {% if worker.status == 'pending' %}
+        <a href="{{ url_for('index') }}" class="btn btn-brand-outline w-100">Return to Homepage &rarr;</a>
+        {% endif %}
+      </div>
+
+      {% else %}
+      <!-- No application yet (or a draft to finish): the application form -->
+      <div class="text-center mb-4">
+        <div class="hero-pill mb-2">
+          {{ icons.icon('shield-check', size=15) }} Free Registration for Tradesmen
+        </div>
+        <h1 class="h2 fw-bold text-dark mb-2">Grow Your Local Customer Base</h1>
+        <p class="text-muted">List your skills on FundiMtaani and connect directly with residents looking for skilled hands in Langata, Madaraka and Nairobi West.</p>
+      </div>
+
+      <!-- Perks Strip -->
+      <div class="row g-3 mb-4 text-center">
+        <div class="col-md-4">
+          <div class="p-3 bg-white rounded-3 border shadow-sm h-100">
+            {{ icons.icon('phone', size=24, class="text-brand mb-2") }}
+            <h6 class="fw-bold mb-1">Direct Communication</h6>
+            <p class="small text-muted mb-0">Clients contact you directly via phone or WhatsApp.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 bg-white rounded-3 border shadow-sm h-100">
+            {{ icons.icon('star-fill', size=24, class="text-warning mb-2") }}
+            <h6 class="fw-bold mb-1">Verified Reputation</h6>
+            <p class="small text-muted mb-0">Collect real reviews from completed bookings.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 bg-white rounded-3 border shadow-sm h-100">
+            {{ icons.icon('tag', size=24, class="text-success mb-2") }}
+            <h6 class="fw-bold mb-1">Zero Commission</h6>
+            <p class="small text-muted mb-0">Keep 100% of the money you earn from every job.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Application Form Card -->
+      <form method="post" action="{{ url_for('join') }}" enctype="multipart/form-data" class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-white">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="website" value="">
+
+        <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">
+          {{ icons.icon('user-plus', size=18) }} Trade Profile Details
+        </h5>
+
+        <p class="small text-muted">
+          Your name and phone come from your account ({{ current_user.full_name }} &middot; {{ current_user.phone }}), so your listing and your account always match. One account can have only one fundi profile.
+        </p>
+
+        {% include "join_form_fields.html" %}
+
+        <div class="row g-2 pt-2">
+          <div class="col-md-6">
+            <button type="submit" name="action" value="draft" class="btn btn-outline-secondary btn-lg w-100 fw-bold">
+              Save Draft
+            </button>
+            <p class="small text-muted text-center mt-2 mb-0">Save what you typed and finish it later.</p>
+          </div>
+          <div class="col-md-6">
+            <button type="submit" name="action" value="submit" class="btn btn-brand-primary btn-lg w-100 fw-bold">
+              Submit My Application &rarr;
+            </button>
+            <p class="small text-muted text-center mt-2 mb-0">
+              {{ icons.icon('shield-check', size=14) }} Admin checks your ID before your profile goes live.
+            </p>
+          </div>
+        </div>
+      </form>
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

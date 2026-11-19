@@ -1,0 +1,252 @@
+{% import "_icons.html" as icons %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}FundiMtaani — Verified Local Fundis in Nairobi{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Connect with verified plumbers, electricians, carpenters, mechanics and cleaners in Langata, Madaraka and Nairobi West. Real reviews, transparent rates, direct contact.{% endblock %}">
+
+  <!-- Modern Font: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.svg') }}">
+
+  <!-- Anti-Flash Synchronous Theme Initializer -->
+  <script>
+    (function() {
+      var saved = localStorage.getItem('fundimtaani_theme');
+      var theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <!-- FundiMtaani Modern Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4.0">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg sticky-top app-navbar">
+    <div class="container-fluid px-3 px-md-4 px-lg-4">
+      <a class="navbar-brand d-flex align-items-center me-auto me-lg-4" href="{{ url_for('index') }}" aria-label="FundiMtaani Home">
+        <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="FundiMtaani Logo" class="brand-logo-img brand-logo-light">
+        <img src="{{ url_for('static', filename='img/logo-white.svg') }}" alt="FundiMtaani Logo" class="brand-logo-img brand-logo-dark">
+      </a>
+
+      <div class="d-flex align-items-center gap-2 d-lg-none">
+        <button type="button" class="btn-theme-toggle" aria-label="Toggle Theme">
+          <span class="theme-icon-moon">{{ icons.icon('moon', size=16) }}</span>
+          <span class="theme-icon-sun">{{ icons.icon('sun', size=16) }}</span>
+        </button>
+        <button class="navbar-toggler border-0 p-1 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          {{ icons.icon('menu', size=22) }}
+        </button>
+      </div>
+
+      <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="{{ url_for('fundis') }}">
+              {{ icons.icon('search', size=16) }} Browse Fundis
+            </a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link nav-link-custom dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ icons.icon('briefcase', size=16) }} Trades
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+              {% for c in all_categories %}
+              <li>
+                <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{ url_for('fundis', category=c.slug) }}">
+                  {{ icons.icon(c.slug, size=15) }} <span>{{ c.name }}</span>
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </li>
+
+          {% if current_user %}
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="{{ url_for('my_bookings') }}">
+              {{ icons.icon('calendar', size=16) }} My Bookings
+            </a>
+          </li>
+          {% if current_user.fundi_profile and current_user.fundi_profile.status != 'draft' %}
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="{{ url_for('my_jobs') }}">
+              {{ icons.icon('briefcase', size=16) }} My Jobs
+            </a>
+          </li>
+          {% endif %}
+          <li class="nav-item dropdown">
+            <a class="nav-link nav-link-custom dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ icons.icon('user-plus', size=16) }} {{ current_user.full_name.split()[0] }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+              <li><a class="dropdown-item py-2" href="{{ url_for('join') }}">My Fundi Application</a></li>
+              {% if current_user.fundi_profile and current_user.fundi_profile.status != 'draft' %}
+              <li><a class="dropdown-item py-2" href="{{ url_for('edit_fundi_profile') }}">Edit My Profile</a></li>
+              {% endif %}
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item py-2" href="{{ url_for('logout') }}">Log out</a></li>
+            </ul>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="{{ url_for('login') }}">
+              {{ icons.icon('lock', size=16) }} Log in
+            </a>
+          </li>
+          <li class="nav-item ms-lg-2">
+            <a class="btn btn-brand-primary btn-sm rounded-pill px-3" href="{{ url_for('register') }}">
+              {{ icons.icon('user-plus', size=15) }} Register
+            </a>
+          </li>
+          {% endif %}
+
+          {% if current_admin %}
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="{{ url_for('admin_dashboard') }}">
+              {{ icons.icon('shield-check', size=16) }} Admin
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="nav-item d-none d-lg-block ms-1">
+            <button type="button" class="btn-theme-toggle" aria-label="Toggle Theme" title="Toggle Light/Dark Theme">
+              <span class="theme-icon-moon">{{ icons.icon('moon', size=16) }}</span>
+              <span class="theme-icon-sun">{{ icons.icon('sun', size=16) }}</span>
+            </button>
+          </li>
+
+          <li class="nav-item ms-lg-2">
+            <a class="btn btn-brand-primary btn-sm rounded-pill px-3" href="{{ url_for('join') }}">
+              {{ icons.icon('user-plus', size=15) }} List Your Trade — Free
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash Alerts Notification System -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category if category in ['success', 'danger', 'info', 'secondary'] else 'warning' }} alert-dismissible fade show d-flex align-items-center gap-2 shadow-sm" role="alert">
+        {{ icons.icon('check-circle', size=18) }}
+        <div>{{ message }}</div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Main Content Body -->
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="app-footer">
+    <div class="container">
+      <div class="row g-4 justify-content-between">
+
+        <!-- Column 1: Brand & Vision -->
+        <div class="col-lg-4 col-md-12 mb-2 mb-lg-0">
+          <a class="d-inline-block text-decoration-none" href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='img/logo-white.svg') }}" alt="FundiMtaani Logo" class="app-footer-brand-logo">
+          </a>
+          <p class="app-footer-desc">
+            Nairobi's dedicated local trade directory. Connect directly with verified plumbers, electricians, carpenters, and technicians in your neighborhood. You pay the fundi directly — no middleman fees, no commission.
+          </p>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="footer-trust-badge">
+              {{ icons.icon('shield-check', size=14, class="text-success") }} Verified Fundis
+            </span>
+            <span class="footer-trust-badge">
+              {{ icons.icon('map-pin', size=14, class="text-brand") }} Langata &middot; Madaraka &middot; Nairobi West
+            </span>
+          </div>
+        </div>
+
+        <!-- Column 2: Popular Trades -->
+        <div class="col-6 col-lg-2 col-md-4">
+          <h5>Popular Trades</h5>
+          <div class="app-footer-nav">
+            {% for c in all_categories[:6] %}
+            <a class="app-footer-link" href="{{ url_for('fundis', category=c.slug) }}">
+              {{ c.name }}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Column 3: Platform -->
+        <div class="col-6 col-lg-3 col-md-4">
+          <h5>Platform</h5>
+          <div class="app-footer-nav">
+            <a class="app-footer-link" href="{{ url_for('fundis') }}">
+              {{ icons.icon('search', size=14) }} <span>Browse Fundis</span>
+            </a>
+            <a class="app-footer-link" href="{{ url_for('join') }}">
+              {{ icons.icon('user-plus', size=14) }} <span>List Your Trade — Free</span>
+            </a>
+            {% if current_user %}
+            <a class="app-footer-link" href="{{ url_for('my_bookings') }}">
+              {{ icons.icon('calendar', size=14) }} <span>My Bookings</span>
+            </a>
+            {% else %}
+            <a class="app-footer-link" href="{{ url_for('register') }}">
+              {{ icons.icon('user-plus', size=14) }} <span>Register</span>
+            </a>
+            <a class="app-footer-link" href="{{ url_for('login') }}">
+              {{ icons.icon('lock', size=14) }} <span>Log in</span>
+            </a>
+            {% endif %}
+            <a class="app-footer-link" href="{{ url_for('admin_login') }}">
+              {{ icons.icon('shield-check', size=14) }} <span>Admin</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Column 4: Safety -->
+        <div class="col-lg-3 col-md-4">
+          <h5>Security &amp; Support</h5>
+          <div class="footer-security-card">
+            <p>
+              FundiMtaani connects residents directly with local artisans. We are <strong>not liable</strong> for private agreements. Never send money before meeting. Pay the fundi directly once the work is done and you are satisfied.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom-bar d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <p class="mb-0">&copy; 2026 FundiMtaani. Local Connection Platform for Nairobi, Kenya. All rights reserved.</p>
+        <div class="d-flex gap-3 small">
+          <a href="{{ url_for('fundis') }}">Browse Fundis</a>
+          <span>&middot;</span>
+          <a href="{{ url_for('join') }}">List Your Trade</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}?v=4.0"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

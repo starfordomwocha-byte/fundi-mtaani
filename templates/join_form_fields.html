@@ -1,0 +1,72 @@
+{# The fundi application form fields, shared by the new-application page and the edit/resume page so both stay identical. #}
+{# Shared fundi-application fields, used by the new-application form in
+   join.html and by the resubmit form shown to a rejected applicant.
+   Expects a "form" dict with category_id, estate, rate, experience, bio
+   and national_id, and (for resubmits) a "worker" with existing uploads. #}
+
+<div class="row g-3">
+
+  <div class="col-md-6">
+    <label class="form-label small fw-bold text-muted">Trade Category *</label>
+    <select name="category_id" class="form-select" required>
+      <option value="">Select your trade...</option>
+      {% for c in all_categories %}
+      <option value="{{ c.id }}" {% if form.category_id == c.id|string %}selected{% endif %}>
+        {{ c.name }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label small fw-bold text-muted">Operating Estate / Base *</label>
+    <select name="estate" class="form-select" required>
+      <option value="">Select primary estate...</option>
+      {% for e in estates %}
+      <option value="{{ e }}" {% if form.estate == e %}selected{% endif %}>
+        {{ e }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label small fw-bold text-muted">Typical Rates / Visit Charge</label>
+    <input name="rate" class="form-control" value="{{ form.rate }}" maxlength="80" placeholder="e.g. From KSh 800 visit fee">
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label small fw-bold text-muted">Years of Experience</label>
+    <input name="experience" class="form-control" value="{{ form.experience }}" maxlength="40" placeholder="e.g. 7 years">
+  </div>
+
+  <div class="col-12">
+    <label class="form-label small fw-bold text-muted">Service Description &amp; Specialized Skills</label>
+    <textarea name="bio" class="form-control" rows="4" maxlength="2000" placeholder="Describe the type of work you do, equipment you own, and guarantees you offer...">{{ form.bio }}</textarea>
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label small fw-bold text-muted">Profile Photo *</label>
+    <input type="file" name="photo" class="form-control" accept=".png,.jpg,.jpeg">
+    <div class="form-text">PNG or JPG, up to 2 MB. Shown on your public profile.</div>
+    {% if worker and worker.photo_filename %}
+    <div class="form-text">Already uploaded: <a href="{{ url_for('uploaded_file', filename=worker.photo_filename) }}" target="_blank">current photo</a> (upload a new one to replace it).</div>
+    {% endif %}
+  </div>
+
+  <div class="col-md-6">
+    <label class="form-label small fw-bold text-muted">National ID / Passport Number *</label>
+    <input name="national_id" class="form-control" value="{{ form.national_id }}" maxlength="40" placeholder="e.g. 31234567">
+    <div class="form-text">Admin checks this against your ID document before approving you.</div>
+  </div>
+
+  <div class="col-12">
+    <label class="form-label small fw-bold text-muted">ID Document (Photo or Scan) *</label>
+    <input type="file" name="id_document" class="form-control" accept=".png,.jpg,.jpeg">
+    <div class="form-text">PNG or JPG, up to 2 MB. Only the admin can open this file — it is never shown publicly.</div>
+    {% if worker and worker.id_document_filename %}
+    <div class="form-text">Already uploaded. Upload a new one to replace it.</div>
+    {% endif %}
+  </div>
+
+</div>

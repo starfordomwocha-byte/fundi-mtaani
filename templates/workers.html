@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}
+{% if active_category %}Verified {{ active_category.name }}s in Nairobi{% else %}Find Verified Fundis in Nairobi{% endif %} — FundiMtaani
+{% endblock %}
+
+{% block meta_description %}
+Connect with verified {{ active_category.name.lower() if active_category else 'fundis' }} in Langata, Madaraka and Nairobi West. Transparent rates and direct WhatsApp contact.
+{% endblock %}
+
+{% block content %}
+
+<!-- Directory Header Banner -->
+<section class="bg-white border-bottom py-4 mb-4">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb small mb-2">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {% if active_category %}{{ active_category.name }}s{% else %}Directory{% endif %}
+        </li>
+      </ol>
+    </nav>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div>
+        <h1 class="h3 fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+          {% if active_category %}
+            {{ icons.icon(active_category.slug, size=26, class="text-brand") }}
+            <span>Verified {{ active_category.name }}s in Nairobi</span>
+          {% else %}
+            {{ icons.icon('shield-check', size=26, class="text-brand") }}
+            <span>Verified Nairobi Trades Directory</span>
+          {% endif %}
+        </h1>
+        <p class="text-muted small mb-0">
+          {% if active_category %}
+            Connect directly with approved, verified {{ active_category.name.lower() }} professionals
+          {% else %}
+            Connect directly with verified local craftsmen in Langata, Madaraka and Nairobi West — zero middleman fees
+          {% endif %}
+        </p>
+      </div>
+
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('join') }}" class="btn btn-brand-primary btn-sm">
+          {{ icons.icon('user-plus', size=15) }} List Your Trade Free
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Full-Width Directory Container -->
+<section class="container mb-5">
+
+  <!-- Unified Top Horizontal Filter Bar -->
+  <form method="get" action="{{ url_for('fundis') }}" class="card border-0 shadow-sm p-3 rounded-4 bg-white mb-3">
+    <div class="row g-2 align-items-end">
+
+      <!-- Category Selector -->
+      <div class="col-md-2 col-6">
+        <label class="form-label small fw-bold text-muted mb-1">Trade Category</label>
+        <select name="category" class="form-select" onchange="this.form.submit()">
+          <option value="">All Trade Categories</option>
+          {% for c in all_categories %}
+          <option value="{{ c.slug }}" {% if active_category and active_category.slug == c.slug %}selected{% endif %}>
+            {{ c.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Estate Selector -->
+      <div class="col-md-2 col-6">
+        <label class="form-label small fw-bold text-muted mb-1">Estate Location</label>
+        <select name="estate" class="form-select" onchange="this.form.submit()">
+          <option value="">All 3 Estates</option>
+          {% for e in estates %}
+          <option value="{{ e }}" {% if selected_estate == e %}selected{% endif %}>
+            {{ e }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Search Query -->
+      <div class="col-md-3 col-8">
+        <label class="form-label small fw-bold text-muted mb-1">Search Keyword / Skill</label>
+        <div class="input-group">
+          <input type="text" name="q" class="form-control" placeholder="e.g. leaking pipe, solar, gate..." value="{{ q }}">
+        </div>
+      </div>
+
+      <!-- Minimum Rating -->
+      <div class="col-md-2 col-4">
+        <label class="form-label small fw-bold text-muted mb-1">Minimum Rating</label>
+        <select name="min_rating" class="form-select" onchange="this.form.submit()">
+          <option value="0" {% if min_rating == 0 %}selected{% endif %}>Any rating</option>
+          <option value="3" {% if min_rating == 3 %}selected{% endif %}>3 stars &amp; up</option>
+          <option value="4" {% if min_rating == 4 %}selected{% endif %}>4 stars &amp; up</option>
+          <option value="5" {% if min_rating == 5 %}selected{% endif %}>5 stars only</option>
+        </select>
+      </div>
+
+      <!-- Sort By & Filter Button -->
+      <div class="col-md-3 col-12">
+        <div class="d-flex gap-2">
+          <div class="flex-grow-1">
+            <label class="form-label small fw-bold text-muted mb-1">Sort By</label>
+            <select name="sort" class="form-select" onchange="this.form.submit()">
+              <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest</option>
+              <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>Top Rated</option>
+              <option value="reviews" {% if sort_by == 'reviews' %}selected{% endif %}>Most Reviewed</option>
+            </select>
+          </div>
+          <div class="d-none d-md-block">
+            <label class="form-label small fw-bold text-transparent mb-1">&nbsp;</label>
+            <button type="submit" class="btn btn-brand-primary">
+              {{ icons.icon('filter', size=15) }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Available only: fundis who say they are taking new jobs (FR03) -->
+    <div class="row g-2 mt-1">
+      <div class="col-12">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="available" value="1" id="availableOnly"
+                 {% if available_only %}checked{% endif %} onchange="this.form.submit()">
+          <label class="form-check-label small fw-bold text-muted" for="availableOnly">
+            Available only — fundis taking new jobs right now
+          </label>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Horizontal Scrollable Trade Categories Strip -->
+  <div class="d-flex gap-2 overflow-x-auto pb-2 mb-3">
+    <a href="{{ url_for('fundis', estate=selected_estate, q=q, sort=sort_by, min_rating=min_rating, available="1" if available_only else "0") }}"
+       class="filter-chip-link{% if not active_category %} active{% endif %}">
+      All Trades
+    </a>
+    {% for c in all_categories %}
+    <a href="{{ url_for('fundis', category=c.slug, estate=selected_estate, q=q, sort=sort_by, min_rating=min_rating, available="1" if available_only else "0") }}"
+       class="filter-chip-link{% if active_category and active_category.slug == c.slug %} active{% endif %}">
+      {{ icons.icon(c.slug, size=14) }} <span>{{ c.name }}</span>
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- Active Filter Status Strip -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <span class="small text-muted">Showing <strong>{{ workers|length }}</strong> verified fundi{{ 's' if workers|length != 1 else '' }}</span>
+
+      {% if active_category %}
+      <span class="badge bg-light text-dark border d-inline-flex align-items-center gap-1">
+        {{ icons.icon(active_category.slug, size=12) }} {{ active_category.name }}
+        <a href="{{ url_for('fundis', estate=selected_estate, q=q, sort=sort_by, min_rating=min_rating, available="1" if available_only else "0") }}" class="text-danger ms-1 fw-bold">&times;</a>
+      </span>
+      {% endif %}
+
+      {% if selected_estate %}
+      <span class="badge bg-light text-dark border d-inline-flex align-items-center gap-1">
+        {{ icons.icon('map-pin', size=12) }} {{ selected_estate }}
+        <a href="{{ url_for('fundis', category=active_category.slug if active_category else '', q=q, sort=sort_by, min_rating=min_rating, available="1" if available_only else "0") }}" class="text-danger ms-1 fw-bold">&times;</a>
+      </span>
+      {% endif %}
+
+      {% if q %}
+      <span class="badge bg-light text-dark border d-inline-flex align-items-center gap-1">
+        &ldquo;{{ q }}&rdquo;
+        <a href="{{ url_for('fundis', category=active_category.slug if active_category else '', estate=selected_estate, sort=sort_by, min_rating=min_rating, available="1" if available_only else "0") }}" class="text-danger ms-1 fw-bold">&times;</a>
+      </span>
+      {% endif %}
+
+      {% if min_rating %}
+      <span class="badge bg-light text-dark border d-inline-flex align-items-center gap-1">
+        {{ min_rating }} stars &amp; up
+        <a href="{{ url_for('fundis', category=active_category.slug if active_category else '', estate=selected_estate, q=q, sort=sort_by, available="1" if available_only else "0") }}" class="text-danger ms-1 fw-bold">&times;</a>
+      </span>
+      {% endif %}
+
+      {% if available_only %}
+      <span class="badge bg-light text-dark border d-inline-flex align-items-center gap-1">
+        Available only
+        <a href="{{ url_for('fundis', category=active_category.slug if active_category else '', estate=selected_estate, q=q, sort=sort_by, min_rating=min_rating) }}" class="text-danger ms-1 fw-bold">&times;</a>
+      </span>
+      {% endif %}
+
+      {% if active_category or selected_estate or q or min_rating or available_only or sort_by != 'newest' %}
+      <a href="{{ url_for('fundis') }}" class="small text-danger ms-2 fw-semibold">
+        Clear all filters
+      </a>
+      {% endif %}
+    </div>
+
+    <div class="small text-muted d-none d-md-block">
+      <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+        {{ icons.icon('shield-check', size=13) }} Direct Contact &middot; Zero Agency Fees
+      </span>
+    </div>
+  </div>
+
+  <!-- Worker Cards Grid (3 Columns on Desktop) -->
+  {% if workers %}
+  <div class="row g-3">
+    {% for w in workers %}
+    {% include "_worker_card.html" %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <!-- Empty State -->
+  <div class="card border-0 shadow-sm p-5 text-center my-4 bg-white rounded-4">
+    <div class="category-icon-wrapper mx-auto mb-3" style="width: 64px; height: 64px;">
+      {{ icons.icon('search', size=32) }}
+    </div>
+    <h4 class="fw-bold mb-2">No Fundis Found for this Search</h4>
+    <p class="text-muted max-w-500 mx-auto mb-4">
+      We couldn't find approved fundis matching your exact combination. Try clearing your filters or selecting another estate.
+    </p>
+    <div class="d-flex justify-content-center gap-2">
+      <a href="{{ url_for('fundis') }}" class="btn btn-brand-primary">
+        Reset All Filters
+      </a>
+      <a href="{{ url_for('join') }}" class="btn btn-brand-outline">
+        {{ icons.icon('user-plus', size=16) }} List Your Trade in This Area
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+</section>
+
+{% endblock %}

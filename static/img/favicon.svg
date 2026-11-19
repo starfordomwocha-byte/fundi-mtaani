@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Rounded Emerald Shield / Workshop Mark -->
+  <rect width="64" height="64" rx="16" fill="#0F4C3A" />
+  <rect x="2" y="2" width="60" height="60" rx="14" stroke="#16654F" stroke-width="2" />
+  
+  <!-- Crossed Architectural & Craftsmanship Lines -->
+  <path d="M20 18L44 42" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+  <path d="M44 18L20 42" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+  <circle cx="32" cy="30" r="6" fill="#0F4C3A" stroke="#F59E0B" stroke-width="3" />
+  
+  <!-- Precision Level Bar -->
+  <path d="M16 50H48" stroke="#F59E0B" stroke-width="4" stroke-linecap="round" />
+  <circle cx="32" cy="50" r="2.5" fill="#FFFFFF" />
+</svg>

@@ -1,0 +1,42 @@
+{# Admin login page: email and password for the Admin account. Customers log in on the normal login page, not here. #}
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}Admin Sign In — FundiMtaani{% endblock %}
+
+{% block content %}
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+        <div class="text-center mb-4">
+          <div class="category-icon-wrapper mx-auto mb-2">
+            {{ icons.icon('lock', size=22) }}
+          </div>
+          <h1 class="h5 fw-bold text-dark mb-1">Admin Portal</h1>
+          <p class="small text-muted mb-0">Sign in with your admin email and password</p>
+        </div>
+
+        <form method="post" action="{{ url_for('admin_login') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Email Address</label>
+            <input type="email" name="email" class="form-control" placeholder="admin@fundimtaani.co.ke" required autofocus>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Enter admin password" required>
+          </div>
+          <button type="submit" class="btn btn-brand-primary w-100 fw-bold py-2">
+            Sign In &rarr;
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

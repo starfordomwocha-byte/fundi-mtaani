@@ -1,0 +1,84 @@
+{# Edit My Fundi Profile: the fundi changes their own trade, estate, rate, experience, bio and photo. #}
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}Edit My Fundi Profile — FundiMtaani{% endblock %}
+
+{% block content %}
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <div class="text-center mb-4">
+        <h1 class="h2 fw-bold text-dark mb-2">Edit My Fundi Profile</h1>
+        <p class="text-muted">Update your rate, estate, bio, experience or photo. Your approval status does not change when you edit.</p>
+      </div>
+
+      <form method="post" action="{{ url_for('edit_fundi_profile') }}" enctype="multipart/form-data" class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-white">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-muted">Trade</label>
+            <div class="form-control bg-light">{{ worker.category.name }}</div>
+            <div class="form-text">Your trade cannot be changed here — contact the admin if it is wrong.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-muted">Operating Estate / Base *</label>
+            <select name="estate" class="form-select" required>
+              {% for e in estates %}
+              <option value="{{ e }}" {% if worker.estate == e %}selected{% endif %}>{{ e }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-muted">Typical Rates / Visit Charge</label>
+            <input name="rate" class="form-control" value="{{ worker.rate }}" maxlength="80">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label small fw-bold text-muted">Years of Experience</label>
+            <input name="experience" class="form-control" value="{{ worker.experience }}" maxlength="40">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label small fw-bold text-muted">Service Description &amp; Specialized Skills</label>
+            <textarea name="bio" class="form-control" rows="4" maxlength="2000">{{ worker.bio }}</textarea>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label small fw-bold text-muted">Profile Photo</label>
+            <input type="file" name="photo" class="form-control" accept=".png,.jpg,.jpeg">
+            <div class="form-text">PNG or JPG, up to 2 MB. Leave empty to keep your current photo.</div>
+            {% if worker.photo_filename %}
+            <div class="mt-2">
+              <img src="{{ url_for('uploaded_file', filename=worker.photo_filename) }}" alt="Current profile photo" style="max-width: 120px; border-radius: 8px;">
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="col-12">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="is_available" value="1" id="isAvailable"
+                     {% if worker.is_available %}checked{% endif %}>
+              <label class="form-check-label small fw-bold text-muted" for="isAvailable">Available for new jobs</label>
+              <div class="form-text">Untick this when you are fully booked. You stay listed, but you are hidden when a visitor filters for available fundis only.</div>
+            </div>
+          </div>
+
+          <div class="col-12 pt-2">
+            <button type="submit" class="btn btn-brand-primary btn-lg w-100 fw-bold">
+              Save My Profile &rarr;
+            </button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

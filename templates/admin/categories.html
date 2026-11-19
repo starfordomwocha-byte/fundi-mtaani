@@ -1,0 +1,84 @@
+{# Admin page: add, rename and delete fundi categories. Delete is blocked while a fundi still uses a category. #}
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}Categories — Admin — FundiMtaani{% endblock %}
+
+{% block content %}
+
+<section class="container py-4">
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2 border-bottom pb-3">
+    <div>
+      <h1 class="h4 fw-bold mb-0 text-dark">Fundi Categories</h1>
+      <p class="small text-muted mb-0">The trades fundis work in. Add, rename or delete them here. A category cannot be deleted while any fundi still uses it.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-outline-secondary">&larr; Dashboard</a>
+      <a href="{{ url_for('admin_reports') }}" class="btn btn-sm btn-outline-secondary">Reports</a>
+      <a href="{{ url_for('admin_logout') }}" class="btn btn-sm btn-danger">Logout</a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+        <h5 class="fw-bold text-dark mb-3">Add a Category</h5>
+        <form method="post" action="{{ url_for('admin_categories') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Category Name *</label>
+            <input type="text" name="name" class="form-control" placeholder="e.g. Tiling" required maxlength="80">
+          </div>
+          <button type="submit" class="btn btn-brand-primary w-100 fw-bold">Add Category</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Link</th>
+                <th>Fundis</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in categories %}
+              <tr>
+                <td>
+                  <span class="trade-chip">{{ icons.icon(c.slug, size=13) }} {{ c.name }}</span>
+                </td>
+                <td class="small text-muted">/fundis?category={{ c.slug }}</td>
+                <td class="small">{{ c.workers|length }}</td>
+                <td class="text-end">
+                  <form method="post" action="{{ url_for('admin_category_edit', category_id=c.id) }}" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="input-group input-group-sm d-inline-flex" style="width: 220px;">
+                      <input type="text" name="name" class="form-control" value="{{ c.name }}" required maxlength="80">
+                      <button class="btn btn-outline-primary">Rename</button>
+                    </div>
+                  </form>
+                  <form method="post" action="{{ url_for('admin_category_delete', category_id=c.id) }}" class="d-inline" onsubmit="return confirm('Delete the {{ c.name }} category?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-sm btn-outline-danger" title="Delete category">
+                      {{ icons.icon('trash', size=14) }}
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+{% endblock %}

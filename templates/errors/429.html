@@ -1,0 +1,26 @@
+{# Error page shown when too many requests arrive too fast and the rate limit steps in (429 Too Many Requests). #}
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}429 Rate Limit Exceeded — FundiMtaani{% endblock %}
+
+{% block content %}
+<section class="container py-5 text-center">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-white">
+        <div class="category-icon-wrapper mx-auto mb-3 text-warning bg-warning-subtle" style="width: 64px; height: 64px;">
+          {{ icons.icon('clock', size=32) }}
+        </div>
+        <h1 class="h4 fw-bold text-dark mb-2">Too Many Requests (429)</h1>
+        <p class="text-muted small mb-4">
+          {{ error_description or 'Our security firewall has detected unusual request traffic from your IP. Please wait a few moments before trying again.' }}
+        </p>
+        <a href="{{ url_for('index') }}" class="btn btn-brand-primary w-100 fw-bold">
+          Return to Homepage &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

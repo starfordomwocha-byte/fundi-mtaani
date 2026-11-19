@@ -1,0 +1,52 @@
+{# Login by email code, step two: type the 6-digit code. In demo mode the code is shown in the demo email box on this page. #}
+{% extends "base.html" %}
+{% import "_icons.html" as icons %}
+
+{% block title %}Enter Your Login Code — FundiMtaani{% endblock %}
+
+{% block content %}
+
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+
+      <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+        <div class="text-center mb-4">
+          <div class="category-icon-wrapper mx-auto mb-2">
+            {{ icons.icon('shield-check', size=22) }}
+          </div>
+          <h1 class="h5 fw-bold text-dark mb-1">Enter Your Login Code</h1>
+          <p class="small text-muted mb-0">We emailed a 6-digit code to <strong>{{ email }}</strong>. Enter it below to sign in. The code works for 15 minutes.</p>
+        </div>
+
+        {% if demo_code %}
+        <div class="alert alert-warning small" role="alert">
+          <strong>Demo email — no mail server is configured.</strong><br>
+          In real use this code arrives by email. For this demo, here is the code that was "emailed":
+          <div class="text-center my-2"><span class="h4 fw-bold text-dark">{{ demo_code }}</span></div>
+          <span class="text-muted">The same message was also written to <code>instance/dev-outbox.txt</code>.</span>
+        </div>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('login_code', email=email, next=request.args.get('next')) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="email" value="{{ email }}">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">6-Digit Code *</label>
+            <input type="text" name="code" class="form-control text-center fs-5 fw-bold" placeholder="123456" required maxlength="6" pattern="[0-9]{6}" inputmode="numeric" autofocus>
+          </div>
+          <button type="submit" class="btn btn-brand-primary w-100 fw-bold py-2">
+            Sign In &rarr;
+          </button>
+        </form>
+
+        <p class="small text-muted text-center mt-3 mb-0">
+          Code expired? <a href="{{ url_for('login') }}">Request a new one</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

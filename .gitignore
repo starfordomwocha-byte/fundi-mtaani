@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+*.pyc
+.env
+instance/*.db
+instance/dev-outbox.txt
+instance/uploads/*
+!instance/uploads/.gitkeep
+.pytest_cache/
