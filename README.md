@@ -4,7 +4,7 @@ A directory of verified local fundis (plumbers, electricians, carpenters and
 more) in three Nairobi estates — **Langata, Madaraka and Nairobi West**.
 Residents find a fundi, book them, and pay the fundi directly.
 
-Built with **Flask + SQLite** (SQLAlchemy), Bootstrap 5, mobile-first.
+Built with **Flask + MySQL** (SQLAlchemy), Bootstrap 5, mobile-first.
 
 ## The model (read this first)
 
@@ -49,6 +49,8 @@ python -m venv venv
 source venv/bin/activate        # Windows: .\venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env            # then set SECRET_KEY (see below)
+# Start MySQL first (XAMPP: start MySQL in the manager). seed.py creates
+# the `fundimtaani` database itself if it does not exist yet.
 python seed.py                  # demo data (idempotent — safe to re-run)
 python app.py
 ```
@@ -111,12 +113,12 @@ seed.py            Demo data: 8 trades, 10 fundis, 1 pending application,
                    3 completed bookings + reviews, demo accounts
 templates/         Jinja templates (Bootstrap 5); templates/admin/ is the admin area
 static/            CSS, JS (theme toggle, WhatsApp composer, admin table search)
-instance/          SQLite database + uploaded photos/ID documents + demo outbox
+instance/          Uploaded photos/ID documents + demo outbox
                    (created at runtime; not in git)
 passenger_wsgi.py  Entry point for cPanel / Phusion Passenger
 wsgi.py            Entry point for gunicorn (gunicorn app:app)
 run_server.py      Convenience runner (python run_server.py)
-requirements.txt   Flask, Flask-SQLAlchemy, python-dotenv, Werkzeug, MarkupSafe, gunicorn
+requirements.txt   Flask, Flask-SQLAlchemy, PyMySQL, python-dotenv, Werkzeug, MarkupSafe, gunicorn
 .env.example       Every setting, with no real secrets in it
 ```
 
@@ -126,10 +128,10 @@ admin; profile photos are public on the fundi's page.
 
 ## Deploy
 
-- **gunicorn:** `gunicorn app:app` (set `DATABASE_URL` to move off SQLite).
+- **gunicorn:** `gunicorn app:app` (DATABASE_URL in `.env` points at MySQL).
 - **cPanel (Passenger):** entry file `passenger_wsgi.py`, app object
   `application`. Set `SECRET_KEY` (and `ADMIN_EMAIL`/`ADMIN_PASSWORD`
   before first seeding) in the environment.
-- **Backups:** the database is a single SQLite file,
-  `instance/fundimtaani.db`. Copy it regularly — that is the backup.
-  Uploads live under `instance/uploads/`; back those up with it.
+- **Backups:** the database lives in MySQL — back it up with mysqldump
+  (`mysqldump -u root fundimtaani > fundimtaani.sql`). Uploads live under
+  `instance/uploads/`; back those up with it.

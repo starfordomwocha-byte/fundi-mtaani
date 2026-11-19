@@ -42,6 +42,46 @@ from werkzeug.security import generate_password_hash
 from app import app
 from models import Admin, Booking, Category, Review, User, Worker, db
 
+
+def ensure_database_exists():
+    # MySQL does not create the database itself: db.create_all() only
+    # creates the TABLES inside a database that already exists. So when
+    # the app is pointed at MySQL, create the database here first if it
+    # is missing. (SQLite needs nothing — its file is created on first use.)
+    uri = app.config["SQLALCHEMY_DATABASE_URI"]
+    if not uri.startswith("mysql"):
+        return
+    import re
+    from sqlalchemy import create_engine, text
+    from sqlalchemy.engine import make_url
+    url = make_url(uri)
+    db_name = url.database
+    if not db_name or not re.fullmatch(r"[A-Za-z0-9_]+", db_name):
+        raise RuntimeError(
+            f"Refusing to create a MySQL database called {db_name!r}: "
+            "use letters, numbers and underscores only."
+        )
+    # Connect to the server without naming a database, then create it.
+    # (URL.set(database=None) does NOT clear the database in SQLAlchemy
+    # 2.x, so build the server URL from the parts instead.)
+    from sqlalchemy.engine import URL
+    server_url = URL.create(
+        drivername=url.drivername,
+        username=url.username,
+        password=url.password,
+        host=url.host,
+        port=url.port,
+    )
+    engine = create_engine(server_url)
+    with engine.begin() as conn:
+        conn.execute(text(
+            f"CREATE DATABASE IF NOT EXISTS `{db_name}` "
+            "CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+        ))
+    engine.dispose()
+    print(f"MySQL database '{db_name}' is ready.")
+
+
 # The eight documented trades, with the slug each one uses in links.
 CATEGORIES = [
     ("Plumbing", "plumbing"),
@@ -277,6 +317,7 @@ def seed():
 if __name__ == "__main__":
     reset = "--reset" in sys.argv
     with app.app_context():
+        ensure_database_exists()
         db.create_all()
         already_seeded = (
             User.query.first() is not None
@@ -293,6 +334,12 @@ if __name__ == "__main__":
             sys.exit(0)
         if reset:
             print("Wiping all tables (--reset was passed)...")
+            # The seeded-check above ran SELECTs, which leave an open
+            # transaction on this session. MySQL holds a metadata lock
+            # for that transaction, so DROP TABLE from another connection
+            # would wait forever. Roll it back first. (SQLite never
+            # showed this — it has no metadata locks.)
+            db.session.rollback()
             db.drop_all()
             db.create_all()
         seed()
