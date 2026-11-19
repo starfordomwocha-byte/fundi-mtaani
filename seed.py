@@ -31,30 +31,27 @@
 #   python seed.py --reset    wipe all tables and seed from scratch
 
 import os
+import re
 import sys
 
-# Passwords are hashed with pbkdf2:sha256 (not Werkzeug's default scrypt),
-# because the system Python on macOS has no hashlib.scrypt, so the
-# default raises AttributeError there. check_password_hash() reads the
-# method from the stored hash, so logins work the same either way.
-from werkzeug.security import generate_password_hash
+# --- Create the MySQL database BEFORE importing app -----------------------
+# app.py creates the tables at import time (db.create_all() at the bottom
+# of app.py), which needs the database to already exist. So when the app
+# is pointed at MySQL, create the database here first, before the import
+# below. (SQLite needs nothing — its file is created on first use.)
+from dotenv import load_dotenv
+load_dotenv()
 
-from app import app
-from models import Admin, Booking, Category, Review, User, Worker, db
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine import URL, make_url
 
 
-def ensure_database_exists():
-    # MySQL does not create the database itself: db.create_all() only
-    # creates the TABLES inside a database that already exists. So when
-    # the app is pointed at MySQL, create the database here first if it
-    # is missing. (SQLite needs nothing — its file is created on first use.)
-    uri = app.config["SQLALCHEMY_DATABASE_URI"]
-    if not uri.startswith("mysql"):
+def ensure_mysql_database(database_url):
+    # Create the MySQL database named in the URL if it does not exist yet.
+    # Does nothing for SQLite or when no URL is given.
+    if not database_url or not database_url.startswith("mysql"):
         return
-    import re
-    from sqlalchemy import create_engine, text
-    from sqlalchemy.engine import make_url
-    url = make_url(uri)
+    url = make_url(database_url)
     db_name = url.database
     if not db_name or not re.fullmatch(r"[A-Za-z0-9_]+", db_name):
         raise RuntimeError(
@@ -64,7 +61,6 @@ def ensure_database_exists():
     # Connect to the server without naming a database, then create it.
     # (URL.set(database=None) does NOT clear the database in SQLAlchemy
     # 2.x, so build the server URL from the parts instead.)
-    from sqlalchemy.engine import URL
     server_url = URL.create(
         drivername=url.drivername,
         username=url.username,
@@ -80,6 +76,24 @@ def ensure_database_exists():
         ))
     engine.dispose()
     print(f"MySQL database '{db_name}' is ready.")
+
+
+ensure_mysql_database(os.environ.get("DATABASE_URL"))
+
+# Passwords are hashed with pbkdf2:sha256 (not Werkzeug's default scrypt),
+# because the system Python on macOS has no hashlib.scrypt, so the
+# default raises AttributeError there. check_password_hash() reads the
+# method from the stored hash, so logins work the same either way.
+from werkzeug.security import generate_password_hash
+
+from app import app
+from models import Admin, Booking, Category, Review, User, Worker, db
+
+
+def ensure_database_exists():
+    # Safety net: create the database from the app's resolved URI too.
+    # Normally the pre-import call above already did this.
+    ensure_mysql_database(app.config["SQLALCHEMY_DATABASE_URI"])
 
 
 # The eight documented trades, with the slug each one uses in links.
