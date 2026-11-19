@@ -115,7 +115,6 @@ templates/         Jinja templates (Bootstrap 5); templates/admin/ is the admin 
 static/            CSS, JS (theme toggle, WhatsApp composer, admin table search)
 instance/          Uploaded photos/ID documents + demo outbox
                    (created at runtime; not in git)
-passenger_wsgi.py  Entry point for cPanel / Phusion Passenger
 wsgi.py            Entry point for gunicorn (gunicorn app:app)
 run_server.py      Convenience runner (python run_server.py)
 requirements.txt   Flask, Flask-SQLAlchemy, PyMySQL, python-dotenv, Werkzeug, MarkupSafe, gunicorn
@@ -126,12 +125,44 @@ Uploads (profile photos and ID documents) go to `instance/uploads/`
 (PNG/JPG only, 2 MB limit). ID documents are only openable by a signed-in
 admin; profile photos are public on the fundi's page.
 
-## Deploy
+## Deploy (putting it online)
 
-- **gunicorn:** `gunicorn app:app` (DATABASE_URL in `.env` points at MySQL).
-- **cPanel (Passenger):** entry file `passenger_wsgi.py`, app object
-  `application`. Set `SECRET_KEY` (and `ADMIN_EMAIL`/`ADMIN_PASSWORD`
-  before first seeding) in the environment.
-- **Backups:** the database lives in MySQL — back it up with mysqldump
-  (`mysqldump -u root fundimtaani > fundimtaani.sql`). Uploads live under
-  `instance/uploads/`; back those up with it.
+Locally the app runs on your own machine at http://127.0.0.1:5000 with
+XAMPP MySQL. Online it is the same code, but the host runs it instead of
+you, and the address is a real domain instead of 127.0.0.1:5000. Nothing
+in the code changes — only the settings in `.env` and how it is started.
+
+1. **Get a host that runs Python and MySQL** (a small VPS, or a Python
+   host such as PythonAnywhere or Render). The host needs Python 3.9+,
+   MySQL, and a way to run a long-lived process.
+2. **Put the code on the host** and install the requirements
+   (`pip install -r requirements.txt`).
+3. **Create a MySQL database on the host** (in the host's panel, or let
+   `seed.py` create it — it runs `CREATE DATABASE IF NOT EXISTS
+   fundimtaani` when the MySQL user has permission to create databases).
+4. **Set the environment on the host** (in `.env` or the host's
+   environment settings — never commit real secrets to git):
+   - `DATABASE_URL` — the host's MySQL address, e.g.
+     `mysql+pymysql://fundimtaani:<password>@<host>:3306/fundimtaani`.
+   - `SECRET_KEY` — a fresh random value (generate one with
+     `python -c "import secrets; print(secrets.token_hex(32))"`).
+     Never reuse the local development key.
+   - `MAIL_SERVER`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`,
+     `MAIL_FROM` — a real mail account, so the 6-digit codes are really
+     emailed. Without these the app stays in demo mode (codes shown on
+     screen), which is fine for testing but not for real users.
+   - `FLASK_ENV=production` — this makes the session cookie HTTPS-only.
+   - `ADMIN_EMAIL` / `ADMIN_PASSWORD` — set these before the first
+     seeding, so the admin account is not the public demo one.
+5. **Seed once on the host** (`python seed.py`) — this creates the 7
+   tables and the demo data. Use `--reset` only if you want to wipe it
+   and start over.
+6. **Run it with gunicorn, not the development server:**
+   `gunicorn app:app` (the `wsgi.py` entry point). `run_server.py` and
+   `python app.py` run the debug server, which is for local use only.
+7. **Backups:** the database lives in MySQL — back it up with mysqldump
+   (`mysqldump -u <user> -p fundimtaani > fundimtaani.sql`). Uploads
+   (profile photos and ID documents) live under `instance/uploads/`;
+   back those up with it. The `instance/` folder must be writable by
+   the app and must survive restarts — on hosts with an ephemeral
+   filesystem, point uploads at persistent storage instead.
